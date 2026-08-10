@@ -1,0 +1,11 @@
+# Copie este arquivo para clash_gifs.txt.
+# Use somente URLs diretas para arquivos próprios ou licenciados.
+# Formato: tipo_da_skill=URL
+
+attack=
+guard=
+evade=
+counter=
+clashable_guard=
+clashable_counter=
+assist_defense=
