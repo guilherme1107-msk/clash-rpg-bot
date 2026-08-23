@@ -16,7 +16,7 @@ bot.py
 
 Responsável por comandos, autocompletes, embeds, botões, seletores, modais, animações, permissões e auditoria. É funcional, mas concentra responsabilidades demais para a futura versão hospedada.
 
-### `clash_engine.py`
+### `src/domain/combat`
 
 Contém modelos e regras sem dependência direta do Discord:
 
@@ -26,6 +26,9 @@ Contém modelos e regras sem dependência direta do Discord:
 - dano;
 - defesa e Counter;
 - seleção de gatilhos.
+
+O arquivo `clash_engine.py` agora é apenas uma camada temporária de
+compatibilidade para instalações e integrações que ainda usam o caminho antigo.
 
 ### `database.py`
 
@@ -54,6 +57,24 @@ tests/
   unit/
   integration/
 ```
+
+## Progresso da migração
+
+- [x] Estrutura inicial de pacotes criada.
+- [x] API pública disponível em `src.domain.combat`.
+- [x] Bot, banco e testes usam o novo caminho de importação.
+- [x] Teste de contrato protege a API pública.
+- [x] Mover modelos e tipos de valor para `src.domain.models`.
+- [x] Mover as funções de resolução de `clash_engine.py` para os módulos do domínio.
+- [x] Transformar `clash_engine.py` em um adaptador de compatibilidade.
+- [x] Criar contratos iniciais para personagens, skills e inimigos.
+- [ ] Extrair serviços de aplicação do `bot.py`.
+- [ ] Extrair repositórios e migrações de `database.py`.
+
+Os modelos oficiais pertencem a `src.domain.models` e as resoluções a
+`src.domain.combat.engine`. A API pública `src.domain.combat` reúne os dois sem
+expor a organização interna. O módulo antigo somente reexporta essa API, mantendo
+identidade de tipos e comportamento estável durante a migração.
 
 ## Princípios
 

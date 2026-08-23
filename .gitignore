@@ -8,6 +8,8 @@ __pycache__/
 clash_audit.log
 clash_gifs.txt
 *.log
+control_center_state.json
+control_center_uploads/
 .pytest_cache/
 .coverage
 htmlcov/

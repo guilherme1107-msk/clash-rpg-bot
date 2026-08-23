@@ -1,0 +1,1 @@
+"""Suíte estruturada de testes."""
