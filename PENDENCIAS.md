@@ -1134,10 +1134,49 @@ Control Center, e `save_ego_gift` sobe para maiúsculo). Backup
 | Blade | Reminiscence | T3 | HE | 0 |
 | Zote | Volatile's earring | T5 | *(vazio)* | 1 |
 
-⚠️ **3 gifts ainda sem classe:** Dreaming Electric Sheep, Clear Mirror e
-Volatile's earring. O autor só falou dos da Rose.
+✅ **Os 3 gifts sem classe não precisam de classe** — o autor: *"esses 3 nem
+existem em limbus"*. `Dreaming Electric Sheep`, `Clear Mirror, Calm Water` e
+`Volatile's earring` são invention dele, então não têm classe de Identity.
+**Item encerrado**, não é pendência.
 
 **Verificação:** **147 testes OK** · as 5 provas rodam · 3 backups novos hoje.
+
+---
+
+## 📍 Ponto de parada (2026-10-02, 00:15)
+
+O autor: *"está ótimo por hoje, aguarde segunda ordens"*. Os gifts ele mesmo
+ajusta depois.
+
+**Estado dos 8 gifts:** todos com tier e classe certos (os 3 sem classe são de
+invenção dele, sem classe de Identity). **12 cláusulas** gravadas no total:
+
+| gift | cláusulas |
+|---|---|
+| Imperfect Eye of Precognition | 6 |
+| The Family's Resentment | 3 |
+| Clear Mirror, Calm Water | 1 |
+| Livro da vingança: Annex | 1 |
+| Volatile's earring | 1 |
+| Carousel Figurine | 1 |
+| Dreaming Electric Sheep | 0 |
+| Reminiscence | 0 |
+
+`test_gifts.py`: **18/20** legíveis. As 2 restantes são "inimigos restantes"
+(Reminiscence) e afinidade (fora de escopo, decisão 2).
+
+**Pendências pequenas que sobraram:**
+- `EGO_GIFT_MAX_BY_UPTIE` continua vazia — falta os números do Uptie.
+- `gift_class`/`crit_damage_mod`/duration/limite no formulário do editor de
+  gifts do Control Center (só no backend e no badge).
+- UI dos gifts na Activity (falta `consume_devotion_repressed` na 4ª cópia das
+  listas) + P8 (embeds).
+- 7 arquivos com EOL misturado, esperando a outra sessão largar `combat.py` e
+  `testes/test_database.py`.
+- Vulnerabilidades: `discord.py`, e `react`/`vite` com `"latest"`.
+
+**Git:** branch `feature/refactor-architecture`, 7 commits, tudo no ar.
+`main` do remoto intocado.
 
 ---
 
