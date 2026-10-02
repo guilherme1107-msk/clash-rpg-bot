@@ -1,17 +1,92 @@
+# =============================================================================
+# Clash RPG Bot — .gitignore
+#
+# Completado em 2026-09-29. Motivo e detalhamento: MUDANCAS-2026-09-29.md
+# (tarefa 4). Regra adotada: entra no Git apenas texto escrito à mão.
+# Nada de segredo, binário, dependência, cache, dado local ou backup.
+#
+# Observação sobre curingas: caminho com barra ("/") ancora a regra na raiz do
+# repositório; curinga sem barra ("*.exe", "node_modules/") casa em qualquer
+# profundidade. Por isso as dependências usam a forma sem barra.
+# =============================================================================
+
+# --- Segredos e configuração local -----------------------------------------
+# `!.env.example` precisa vir DEPOIS de `.env.*`, senão a exceção nunca vence.
 .env
 .env.*
 !.env.example
+*.key
+*.pem
+
+# --- Ambiente e dependências Python ----------------------------------------
 .venv/
+venv/
+env/
 __pycache__/
 *.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# --- Dependências e builds de front-end (qualquer pasta da árvore) ---------
+# Antes só cobria ui/discord-activity/; hoje vale para qualquer app em ui/.
+node_modules/
+dist/
+build/
+.vite/
+*.tsbuildinfo
+
+# --- Banco de dados e dados locais -----------------------------------------
+# `*.sqlite3` sozinho NÃO cobre os arquivos vizinhos do modo WAL:
+# clash_rpg.sqlite3-wal (4,1 MB), clash_rpg.sqlite3-shm e *.sqlite3-journal.
+# Eles não batiam com nenhuma regra antiga e seriam versionados por engano.
 *.sqlite3
-clash_audit.log
-clash_gifs.txt
-*.log
+*.sqlite3-*
+*.db
+backups/
 control_center_state.json
 control_center_uploads/
-.pytest_cache/
-.coverage
-htmlcov/
+clash_gifs.txt
+
+# --- Log e auditoria --------------------------------------------------------
+*.log
+clash_audit.log
+
+# --- Binários compilados ----------------------------------------------------
+# Cobre ClashBot.exe (gerado por build_launcher.bat) e tools/cloudflared.exe,
+# que antes só estavam listados um a um.
+*.exe
+*.dll
+*.msi
+
+# --- Arquivos compactados / backups ----------------------------------------
+# Guardavam a UI da Rosemary (rosemary-panel.rar e .zip = 469 MB); hoje essa
+# UI está fora do repositório, em Documents\Rosemary game\, mas o curinga
+# evita que qualquer compactado de backup volte a entrar.
+*.rar
+*.zip
+*.7z
+*.tar
+*.tar.gz
+
+# --- Editores e sistema -----------------------------------------------------
+.idea/
+.vscode/
+*.swp
+*~
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# --- Arquivos temporários de rascunho --------------------------------------
+# `tmp_sheet2.txt` apareceu com 0 bytes na raiz e ia versionado por engano —
+# é a saída de uma inspeção de ficha, não faz parte do bot.
+tmp_*.txt
+*.tmp
+*.bak
+*.orig
