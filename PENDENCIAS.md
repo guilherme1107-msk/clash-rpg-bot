@@ -1007,6 +1007,41 @@ Backup: `backups/clash_rpg-antes-family-20261001-233738.sqlite3`.
 autor classificou são HE (Reminiscence) e WAW (Livro). Falta decidir o
 deste.
 
+---
+
+## 🔶 Escudo do Livro — "só um número solto" (2026-10-01, 23:4x)
+
+**Autor:** *"deixa só um número solto"* — não criar status de escudo. Bom: o
+escudo **já é** um número solto hoje. `clashable_guard_values()` devolve
+`(stagger_manual, escudo)` e o `escudo` é só `loser_power` quando o perdedor é
+`clashable_guard` — nunca foi gravado no banco. Então o gift só precisa
+**somar** nesse número na hora do embed. Nada de status novo, nada de migração.
+
+**Regra (autor 21:5x):** quebra e volta a 50 na próxima rodada; não quebra e
+volta a 50. Ou seja, **renova em 50 por rodada**, não é "não expira".
+
+**O que ainda NÃO fecha:** o *"50 de escudo **para cada aliado da Middle**"* é
+um **multiplicador por contagem**, e nenhum mecanismo existente faz isso:
+
+- `condition_min`/`condition_per` escalam por um **status** (Poise, Bloodfeast),
+  não por uma **contagem de aliados com keyword**.
+- `effect_owner` tem `all_allies` (todos) e `faction` (quem declara a
+  `active_tag` do gift), mas não "todos os aliados **da keyword X**" com
+  multiplicador `N`.
+
+Falta decidir uma de três:
+1. `all_allies` + um gate novo por keyword, e o `50 × N` calculado à parte
+   (provavelmente um `condition` do tipo "conte os aliados com keyword `middle`").
+2. Tratar `N` como `value × N` dentro do próprio efeito — exige o mesmo
+   condicional, só que embutido.
+3. Deixar o `N` fora do motor: o gift entrega **50**, e o **mestre** multiplica
+   pelo número de aliados da Middle (o HP/Stagger já é assim — o bot publica a
+   linha).
+
+**A 3 é a mais barata e combina com a regra do projeto** ("o bot não controla HP
+ou Stagger realmente"), mas tira do bot a contagem. **A 1 é a correta** se a
+contagem for importa
+
 **Contagem recalculada:** o `test_gifts.py` mede agora **16/21** exigências
 (era 13/24) com **5 bloqueadas** (era 11). As 6 que saíram foram as de Envy e
 Protection, que o autor tirou de escopo.
@@ -1016,6 +1051,50 @@ Consumido (**Compartilhado**)" e a linha da La Manchaland passam porque a
 cláusula *carrega* — mas `bloodfeast_consumed` é **por ficha**, e o print pede o
 total **do time**. Esse lado ainda não existe, e o teste não pega (ele valida que
 o motor engole a cláusula, não que ela signifique a coisa certa).
+
+---
+
+## ✅ Escudo do Livro: a opção 1 (2026-10-02, 00:0x → 00:15)
+
+O autor escolheu a **1**: o bot conta os aliados com a keyword e multiplica.
+
+**1. `condition_keyword`** — novo campo do `SkillEffect`. Os `condition_per` que
+existiam escalam por um **status** (Poise, Bloodfeast); este conta **pessoas**.
+Sem o campo, `condition_status="allies_with_keyword"` sem keyword levanta
+`ValueError` — falha fechada na validação, não em silêncio depois.
+
+**2. `allies_with_keyword`** — nova condição, resolvida por
+`db.count_allies_with` (que já existia desde a Etapa 3). O próprio entra na
+conta, como em todo o resto.
+
+**3. `shield`** — novo `effect_type`, e ele **não é status**. `gift_shield()` soma
+no `guard_shield` dos dois pontos de Clash, do lado de quem **perdeu**. Três
+decisões dentro disso:
+- **Só a defusa ganha.** Quem não tem `clashable_guard` recebe 0 — o gift não
+  inventa uma defusa que não existe.
+- **Nada é gravado** (0 linhas de status `shield` no banco). É por isso que
+  *"quebrou ou não, volta a 50 na próxima rodada"* sai de graça: sem estado
+  guardado, o número é recalculado a cada Clash.
+- **O gift é procurado do lado do perdedor**, que pode ser ficha ou inimigo
+  (os dois pontos de Clash tratam os casos diferentes).
+
+**Prova** (`testes/verify_escudo_livro.py`): `50 × N` bateu de N=2 a N=6; quem
+marcou `blitz` não contou; sem defusa deu 0; 0 linhas gravadas.
+
+⚠️ **`gift_shield()` foi colocado no `bot.py`, não no `engine.py`** — a primeira
+tentativa foi no `src/domain/combat/engine.py`, que é a camada de domínio e não
+pode importar de `bot.py` nem de `database.py` (inverte a camada e cria ciclo).
+
+**Gravado no banco real:** 1 cláusula no Livro (id=5, T5, classe WAW), validada
+antes. Backup `backups/clash_rpg-antes-escudo-20261002-000240.sqlite3`.
+
+⚠️ **NENHUMA ficha da Arcana tem a keyword `middle`** — o escudo dá **0** até
+alguém marcar as aliadas da Middle pelo Control Center. A cláusula está correta
+e acorda sozinha quando as keywords existirem, mas hoje está inerte. É a única
+coisa que falta para o Livro funcionar de verdade.
+
+**Contagem:** o `test_gifts.py` vai a **18/20** com **2 bloqueadas** — "inimigos
+restantes" do Reminiscence e a afinidade (fora de escopo).
 
 ---
 

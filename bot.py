@@ -648,6 +648,17 @@ def skill_condition_value(
             guild_id, owner_kind if effect.condition_owner == "user" else actor_kind,
             owner_id if effect.condition_owner == "user" else actor_id,
         )
+    elif effect.condition_status == "allies_with_keyword":
+        # "50 de escudo **para cada aliado da Middle**" (Livro da vingança).
+        # Conta os aliados com a keyword — `condition_per` escala por *status*,
+        # não por contagem de pessoas, então este caso é próprio.
+        # O próprio entra na conta (mesma definição de "aliado" do resto).
+        valor = db.count_allies_with(
+            guild_id,
+            owner_kind if effect.condition_owner == "user" else actor_kind,
+            owner_id if effect.condition_owner == "user" else actor_id,
+            effect.condition_keyword,
+        )
     elif effect.condition_status == "bloodfiend_or_bloodbag":
         tags = db.get_enemy_tags(owner_id) if owner_kind == "enemy" else []
         value = int(bool({tag.casefold() for tag in tags} & {"bloodfiend", "bloodbag"}))
@@ -1943,6 +1954,40 @@ def revert_temporary_self_trigger(
 
 def level_symbol(skill: Skill) -> str:
     return DEFENSE_LEVEL_ICON if skill.uses_defense_level else OFFENSE_LEVEL_ICON
+
+
+def gift_shield(guild_id: int, defender_kind: str, defender_id: int,
+                tem_defusa: bool) -> int:
+    """Escudo extra dos E.G.O Gifts — o "50 **para cada aliado da Middle**".
+
+    **Não é status.** O escudo do bot já é um número solto (vem de
+    `clashable_guard_values`) e o gift só **soma** nele na hora do embed
+    (decisão do autor, 23:4x). Nada é gravado no banco — e é por isso que a
+    regra "quebrou ou não, volta a 50 na próxima rodada" sai de graça: sem
+    estado guardado, o número é recalculado.
+
+    A cláusula do Livro da vingança é `shield` com
+    `condition_status="allies_with_keyword"` + `condition_keyword="middle"`,
+    então o total é `50 × (aliados com a keyword)`. O próprio entra na
+    contagem, como em todo o resto do sistema.
+
+    Só a **defusa** gera escudo hoje, e o gift não inventa uma: quem não tem
+    `clashable_guard` não ganha nada.
+    """
+    if not tem_defusa:
+        return 0
+    total = 0
+    for _nome, efeito, _tag in triggered_gift_effects(
+        guild_id, defender_kind, defender_id, "session_encounter_start",
+    ):
+        if efeito.effect_type != "shield":
+            continue
+        base = max(0, int(efeito.value))
+        if efeito.condition_status == "allies_with_keyword":
+            base *= db.count_allies_with(
+                guild_id, defender_kind, defender_id, efeito.condition_keyword)
+        total += base
+    return total
 
 
 def damage_embed(
@@ -6714,6 +6759,14 @@ async def clash_jogador_impl(interaction: discord.Interaction, oponente: discord
             )
     winning_skill = left if result.winner == "left" else right
     stagger_value, guard_shield = clashable_guard_values(result, left, right)
+    # Escudo do E.G.O Gift (Livro da vingança: 50 por aliado da Middle). Só a
+    # defusa perde — então o gift é procurado do lado do PERDEDOR.
+    _perdeu = result.winner == "left"
+    _def_kind, _def_id = ("player", rc["id"]) if _perdeu else ("player", lc["id"])
+    _guard_skill = right if _perdeu else left
+    guard_shield += gift_shield(
+        guild_id, _def_kind, _def_id, _guard_skill.skill_type == "clashable_guard",
+    )
     if stagger_value:
         guard_winner = lc["name"] if result.winner == "left" else rc["name"]
         guard_target = rc["name"] if result.winner == "left" else lc["name"]
@@ -7013,6 +7066,18 @@ async def clash_inimigo_impl(
             )
     winning_skill = left if result.winner == "left" else right
     stagger_value, guard_shield = clashable_guard_values(result, left, right)
+    # Escudo do E.G.O Gift (Livro da vingança: 50 por aliado da Middle). O
+    # perdedor pode ser a ficha OU o inimigo — por isso os dois lados.
+    _perdeu = result.winner == "left"
+    if _perdeu:
+        _def_kind, _def_id = ("player", interaction.user.id)
+        _guard_skill = right
+    else:
+        _def_kind, _def_id = ("enemy", enemy["id"])
+        _guard_skill = left
+    guard_shield += gift_shield(
+        guild_id, _def_kind, _def_id, _guard_skill.skill_type == "clashable_guard",
+    )
     if stagger_value:
         guard_winner = player["name"] if result.winner == "left" else enemy["name"]
         guard_target = enemy["name"] if result.winner == "left" else player["name"]

@@ -30,6 +30,10 @@ EFFECT_TYPES = {
     # cura de status — o bot **publica** a linha (HP é modo manual, §8) e o
     # autor aplica. `value` é a porcentagem, `condition_max_stacks` o teto.
     "heal_from_damage",
+    # Escudo: NÃO é status. O escudo do bot já é um número solto (vem de
+    # `clashable_guard_values`) e o gift só **soma** nele na hora do embed
+    # (decisão do autor, 23:4x). `value` é quanto cada aliado ganha.
+    "shield",
     # O mesmo para o Bloodfeast: a Rosemary consumia a Falsa Fome pelas skills,
     # e o E.G.O Gift precisa enxergar o MESMO recurso. Como a Falsa Fome é um
     # Unique Bloodfeast (decisão do autor), as skills dela passaram a speak
@@ -107,6 +111,11 @@ class SkillEffect:
     # personagem por rodada". 0/None = sem limite.
     max_activations: int | None = None
     activation_window: str = "combat"      # combat | round
+    # "50 de escudo **para cada aliado da Middle**" (Livro da vingança).
+    # `condition_status="allies_with_keyword"` lê a **contagem** de aliados que
+    # têm esta keyword — os `condition_per` existentes escalam por um *status*
+    # (Poise, Bloodfeast), não por uma contagem de pessoas.
+    condition_keyword: str = ""
 
     def __post_init__(self) -> None:
         if self.trigger not in EFFECT_TRIGGERS:
@@ -137,6 +146,8 @@ class SkillEffect:
             raise ValueError("Custos e escalas da condição não podem ser negativos.")
         if self.condition_min < 0 and self.condition_status not in scalar_conditions:
             raise ValueError("Somente SP e modificadores temporários aceitam referência negativa.")
+        if self.condition_status == "allies_with_keyword" and not self.condition_keyword:
+            raise ValueError("A condição por contagem de aliados precisa de `condition_keyword`.")
         if self.condition_status is not None and self.condition_status not in {
             "burn", "bleed", "tremor", "rupture", "sinking", "poise", "charge", "haste", "special_condition",
             "special_condition_consumed", "bloodfeast", "bloodfeast_consumed",
@@ -144,6 +155,9 @@ class SkillEffect:
             # "(Compartilhado)" da print do The Family's Resentment. Sem isso,
             # dois aliados consumindo 30 cada dariam 30 quando a regra e 50.
             "shared_bloodfeast_consumed",
+            # Conta os ALIADOS com uma keyword (`condition_keyword`). É o que
+            # permite o "50 de escudo para cada aliado da Middle": 50 × N.
+            "allies_with_keyword",
             # Não é um status da ficha: é uma pergunta sobre o **resultado** da
             # skill ("ela inflictiu Bleed?"). O bot responde comparando o Bleed
             # do alvo antes e depois da resolução — vale para qualquer skill,

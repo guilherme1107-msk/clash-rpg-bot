@@ -9,7 +9,7 @@ DEFENSIVE_SKILL_TYPES = {"guard", "evade", "counter", "clashable_guard", "clasha
 # Condições aceitas em `condition_status`. Fica no módulo (e não dentro da
 # função) para que o editor do Control Center leia a MESMA lista que valida —
 # era uma cópia escrita à mão no HTML que já tinha divergido.
-VALID_CONDITIONS = {"burn","bleed","tremor","rupture","sinking","poise","charge","haste","special_condition","special_condition_consumed","bloodfeast","bloodfeast_consumed","shared_bloodfeast_consumed","bloodfiend_or_bloodbag","paralysis","sp","base_power","coin_power","clash_power","offense_level","defense_level"}
+VALID_CONDITIONS = {"burn","bleed","tremor","rupture","sinking","poise","charge","haste","special_condition","special_condition_consumed","bloodfeast","bloodfeast_consumed","shared_bloodfeast_consumed","allies_with_keyword","bloodfiend_or_bloodbag","paralysis","sp","base_power","coin_power","clash_power","offense_level","defense_level"}
 
 def normalize_skill_slot(value: object, skill_type: str = "attack") -> str:
     slot = str(value or "").strip().lower()
@@ -29,7 +29,7 @@ def parse_skill_payload(payload: object) -> tuple[Skill, str]:
     if not isinstance(raw_effects, list) or len(raw_effects) > 20: raise ValueError("Uma skill pode ter no máximo 20 efeitos.")
     # `max_per_round` e `condition_turn` estavam fora desta lista e eram
     # descartados em silêncio ao salvar uma skill pela UI.
-    allowed = {"trigger","effect_type","value","coin","count","charge_cost","condition_status","condition_min","condition_owner","condition_value","condition_per","condition_max_stacks","consume_condition","effect_owner","condition_operator","max_per_round","condition_turn"}
+    allowed = {"trigger","effect_type","value","coin","count","charge_cost","condition_status","condition_min","condition_owner","condition_value","condition_per","condition_max_stacks","consume_condition","effect_owner","condition_operator","max_per_round","condition_turn","condition_keyword"}
     counted = {"burn","bleed","tremor","rupture","sinking","poise","charge","haste","special_condition","bloodfeast","self_bleed"}; effects = []
     for index, item in enumerate(raw_effects, 1):
         if not isinstance(item, dict): raise ValueError(f"Efeito {index}: configuração inválida.")

@@ -52,7 +52,7 @@ PENDENCIA = {
     "inflicted_bleed": "precisa ler o que a SKILL aplicou, nao um status da ficha",
     # tipo de efeito inexistente
     "heal_from_damage": "cura sobre o dano da skill — Etapa 7 (modo manual HP)",
-    "shield": "status de escudo que o gift renova (falta criar)",
+    "shield": "o escudo virou numero solto (autor 23:4x) — `allies_with_keyword` faz o 50 x N",
     "affinity": "afinidade = fora de escopo (o bot nao tem Sin Affinity)",
     # gatilho inexistente
     "on_clash_win": "nao existe 'vitoria de Clash' como gatilho (o certo e clash_win)",
@@ -131,13 +131,14 @@ REQUISITOS = {
         # escopo — e Envy não é produzido por NENHUMA skill da Arcana, então
         # construir o recurso agora seria construir coisa morta.
         # Autor 21:5x: o escudo "quebra e na próxima rodada ele volta em 50,
-        # caso não quebre ele volta pra 50. E fica nisso." — ou seja, **não**
-        # é escudo persistente: é o escudo normal que **renova em 50 a cada
-        # rodada**, quebrado ou não. Não precisa de "não expira".
+        # caso não quebre ele volta pra 50. E fica nisso."
+        # Autor 23:4x: "deixa só um número solto" — o escudo JÁ é um número
+        # solto (`clashable_guard_values`); o gift só soma nele no embed. Por
+        # isso "renova em 50" sai de graça: sem estado guardado, recalcula-se.
         ("[Inicio do Encontro] 50 de escudo POR ALIADO da Middle",
-         [{"trigger": "session_encounter_start", "effect_type": "shield", "value": 50}]),
-        ("o escudo volta a 50 no inicio de cada rodada (quebrou ou nao)",
-         [{"trigger": "session_round_start", "effect_type": "shield", "value": 50}]),
+         [{"trigger": "session_encounter_start", "effect_type": "shield", "value": 50,
+           "condition_status": "allies_with_keyword", "condition_keyword": "middle",
+           "condition_min": 1, "effect_owner": "all_allies"}]),
     ],
     "Clear Mirror, Calm Water": [
         ("se um critico consumiu Poise Count: +10 Offense na proxima (1x por rodada)",
