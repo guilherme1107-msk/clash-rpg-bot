@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 560">
+  <rect width="400" height="560" fill="#15121a"/>
+  <circle cx="200" cy="210" r="90" fill="#26202b"/>
+  <rect x="90" y="330" width="220" height="230" fill="#26202b"/>
+  <text x="200" y="470" font-family="monospace" font-size="14" fill="#6b6270" text-anchor="middle">RETRATO</text>
+  <text x="200" y="492" font-family="monospace" font-size="14" fill="#6b6270" text-anchor="middle">PLACEHOLDER</text>
+</svg>

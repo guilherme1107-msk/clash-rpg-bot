@@ -1,0 +1,38 @@
+.quick-resources { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px; border: 1px solid #4a3336; background: #100d0e; }
+.light-stepper { display: flex; align-items: center; gap: 7px; }
+.light-stepper > span { color: #aa8957; font-size: 8px; letter-spacing: .14em; }
+.light-stepper > strong { min-width: 48px; text-align: center; color: #e1c485; font-size: 11px; }
+.light-stepper > button { display: grid; place-items: center; width: 27px; height: 27px; padding: 0; border: 1px solid #755a30; background: #17120d; color: #e1c485; }
+.light-stepper > button:hover:not(:disabled) { border-color: #d6a74e; background: #2a2011; }
+.light-stepper > button:disabled { opacity: .35; cursor: default; }
+.light-stepper svg { width: 13px; }
+.unopposed-composer { display: grid; grid-template-columns: minmax(180px,1fr) minmax(210px,1.2fr) auto; gap: 8px; align-items: center; padding: 11px; border: 1px solid #735329; background: linear-gradient(120deg,#17120d,#0d0b0c); }
+.unopposed-composer header { display: flex; align-items: center; gap: 8px; grid-column: 1/-1; }
+.unopposed-composer header svg { width: 17px; color: #d8ab58; }
+.unopposed-composer header span { display: block; color: #d9b36b; font-size: 9px; letter-spacing: .14em; }
+.unopposed-composer header small { color: var(--color-text-faint); font-size: 8px; }
+.unopposed-composer select { width: 100%; box-sizing: border-box; background: #080708; border: 1px solid #59442b; color: var(--color-text-main); padding: 8px; font: 9px var(--font-body); }
+.unopposed-composer > button { display: flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid #976a2e; background: #3e2911; color: #f0d5a5; padding: 8px 12px; font-size: 8px; }
+.unopposed-composer > button svg { width: 13px; }
+
+.encounter-mode .dossier-layout { grid-template-columns: minmax(190px, 27%) 1fr; }
+.encounter-mode .dossier-portrait .portrait-panel { position: relative; top: auto; }
+.encounter-side-overview { margin-top: 14px; padding-top: 14px; border-top: 1px solid #4a3336; }
+.encounter-side-overview .overview-tab { display: grid; gap: 10px; }
+.encounter-side-overview .overview-meters,
+.encounter-side-overview .overview-stats,
+.encounter-side-overview .status-dossier { grid-template-columns: 1fr; }
+.encounter-side-overview .overview-stats > .uptie-display { display: none; }
+.encounter-side-overview .status-effects,
+.encounter-side-overview .status-resistances { grid-column: auto; }
+.encounter-side-overview .overview-identity dl,
+.encounter-side-overview .status-effect-list { grid-template-columns: 1fr; }
+.encounter-side-overview .uptie-track { overflow-x: auto; }
+.encounter-side-overview .status-rules { display: none; }
+
+@media (max-width: 760px) {
+  .encounter-mode .dossier-layout { grid-template-columns: 1fr; }
+  .quick-resources { align-items: stretch; flex-direction: column; }
+  .light-stepper { justify-content: space-between; }
+  .unopposed-composer { grid-template-columns: 1fr; }
+}

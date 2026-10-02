@@ -1,0 +1,632 @@
+{
+  "profile": {
+    "age": 24,
+    "height": "1,74 m",
+    "weight": "64 kg",
+    "gender": "Feminino",
+    "sexuality": "Lésbica",
+    "association": "Fenghunt | Bloodfiend",
+    "ego": "Sombras de um por quê",
+    "level": 2,
+    "offense_level": 8,
+    "defense_level": 10,
+    "hp": 153,
+    "max_hp": 153,
+    "hp_roll_total": 54,
+    "light": 3,
+    "max_light": 3,
+    "armor_class": 13,
+    "damage_reduction": 0,
+    "stagger": 76,
+    "max_stagger": 76,
+    "sanity": 0,
+    "movement": "9 m",
+    "attributes": {
+      "Força": 14,
+      "Destreza": 14,
+      "Constituição": 18,
+      "Inteligência": 12,
+      "Sabedoria": 16,
+      "Carisma": 18
+    },
+    "resistances": {
+      "Corte": "1.5x",
+      "Perfuração": "0.5x",
+      "Contusão": "1.0x"
+    }
+  },
+  "uptie": 5,
+  "uptie_levels": [
+    {
+      "level": "I",
+      "cost": 0,
+      "effects": [
+        "Ataque Básico",
+        "Skill 1",
+        "Skill 2",
+        "Skill Defensiva",
+        "Passiva Moral Baixo",
+        "Passiva Pânico",
+        "Passiva 1",
+        "E.G.O. inicial"
+      ]
+    },
+    {
+      "level": "II",
+      "cost": 40,
+      "effects": [
+        "Melhoria pequena nas Skills",
+        "Passiva Sanidade Alta"
+      ]
+    },
+    {
+      "level": "III",
+      "cost": 80,
+      "effects": [
+        "Melhoria média nas Skills",
+        "Skill 3",
+        "Velocidade Aumenta Novamente"
+      ]
+    },
+    {
+      "level": "IV",
+      "cost": 150,
+      "effects": [
+        "Melhoria grande nas Skills",
+        "Passiva Suporte"
+      ]
+    },
+    {
+      "level": "V",
+      "cost": 300,
+      "effects": [
+        "Melhoria colossal nas Skills",
+        "Singularidade",
+        "Shin & Mang",
+        "Novos E.G.O."
+      ]
+    }
+  ],
+  "level_rules": [
+    "Por nível: +3 Offense Level + metade do modificador de Força.",
+    "Por nível: +3 Defense Level + metade do modificador de Constituição.",
+    "Por nível: +5 Vida + modificador de Constituição.",
+    "A cada 4 níveis: +1 Light máximo.",
+    "Limite de Light: +5 no nível 20 e +7 no nível 30."
+  ],
+  "level_milestones": [
+    {
+      "level": 1,
+      "attribute": 0,
+      "grade": "+4 | +0",
+      "perks": 0
+    },
+    {
+      "level": 2,
+      "attribute": 2,
+      "grade": "+5 | +1",
+      "perks": 0
+    },
+    {
+      "level": 3,
+      "attribute": 0,
+      "grade": "+6 | +1",
+      "perks": 1
+    },
+    {
+      "level": 4,
+      "attribute": 4,
+      "grade": "+7 | +2",
+      "perks": 0
+    },
+    {
+      "level": 5,
+      "attribute": 0,
+      "grade": "+8 | +2",
+      "perks": 0
+    },
+    {
+      "level": 6,
+      "attribute": 6,
+      "grade": "+9 | +3",
+      "perks": 2
+    },
+    {
+      "level": 7,
+      "attribute": 0,
+      "grade": "+10 | +3",
+      "perks": 0
+    },
+    {
+      "level": 8,
+      "attribute": 8,
+      "grade": "+11 | +4",
+      "perks": 0
+    },
+    {
+      "level": 9,
+      "attribute": 0,
+      "grade": "+12 | +4",
+      "perks": 3
+    },
+    {
+      "level": 10,
+      "attribute": 10,
+      "resistance": "1.5x, 1.0x, 0.5x",
+      "grade": "+13 | +5",
+      "perks": 0
+    },
+    {
+      "level": 11,
+      "attribute": 0,
+      "grade": "+14 | +5",
+      "perks": 0
+    },
+    {
+      "level": 12,
+      "attribute": 12,
+      "grade": "+15 | +6",
+      "perks": 4
+    },
+    {
+      "level": 13,
+      "attribute": 0,
+      "grade": "+16 | +6",
+      "perks": 0
+    }
+  ],
+  "combat_passives": [
+    {
+      "id": "possua-me",
+      "uptie_required": 1,
+      "name": "Possua-me, Ó Besta de Sangue",
+      "uptie": "V",
+      "trigger": "Falsa Fome consumida durante o Encounter",
+      "description": "Registre toda Falsa Fome consumida durante o Encounter.\n• Para cada 1 Falsa Fome consumida: cause +0,2% de Dano, até +40%.\n• Contra \"<Bloodfiend>\" ou \"<Bloodbag>\": +0,3% de Dano por ponto, até +60%.\n• Ao consumir 20+ Falsa Fome de uma vez: Recupere 5 SP e 5% do HP Máximo.\n• Ao atingir 60 Falsa Fome consumida: Ganhe +1 Coin Power pelo restante do Encounter.",
+      "implementation": "connected"
+    },
+    {
+      "id": "moral-baixa",
+      "uptie_required": 1,
+      "name": "Moral Baixa: Eu Nunca Serei Um Deles…",
+      "trigger": "−35 SP ou menos",
+      "description": "Receba 2 Clash Power Down. Sofra +20% de Dano. Não pode usar Skills Defensivas. Contra Bloodfiend ou Bloodbag, cause +5% de Dano, mas sofra +5% de Dano adicional deles.",
+      "implementation": "connected"
+    },
+    {
+      "id": "ajoelhe-se",
+      "uptie_required": 5,
+      "name": "0 Selos — Ajoelhe-se, Ó Besta Indigna",
+      "uptie": "V",
+      "trigger": "0 Selos / kit liberto",
+      "description": "Substitua esta Passiva, mantendo toda Falsa Fome consumida registrada.\n• Contra alvos com Bleed: +1 Clash Power.\n• Se o alvo não possuir Bleed, o primeiro acerto da Rodada inflige 5 Bleed.\n• A última Coin de cada Skill inflige +1 Bleed Count.\n\nContra \"<Bloodfiend>\" ou \"<Bloodbag>\" abaixo de 50% HP, Staggered ou que tenha perdido um Clash para Rosemary:\n• +1 Coin Power.\n• +15% de Dano.\n• Ao vencer um Clash: inflija 6 Defense Down na próxima Rodada.\n• Ao derrotá-lo: Recupere 10 SP e 10% do HP Máximo; Ganhe 20 Falsa Fome.",
+      "implementation": "connected"
+    },
+    {
+      "id": "delirio",
+      "uptie_required": 2,
+      "name": "Delírio de Pertencimento",
+      "uptie": "V",
+      "trigger": "+45 SP",
+      "description": "• +2 Clash Power.\n• Cause +20% de Dano.\n• Ao ganhar Falsa Fome através de uma Skill, ganhe +10 Falsa Fome adicional.\n• Ao consumir Falsa Fome, considere que consumiu +10 para efeitos de Skills e Passivas, sem gastar essa quantidade adicional.\n• Ao consumir 20+ Falsa Fome de uma vez: Recupere 5% do HP Máximo.\n• Ao vencer um Clash: Ganhe 25 Falsa Fome.",
+      "implementation": "connected"
+    },
+    {
+      "id": "correntes",
+      "uptie_required": 4,
+      "name": "As Correntes Não São Minhas",
+      "uptie": "V",
+      "trigger": "Encounter / Devoção / Selos / HP",
+      "description": "Começa o Encounter com 3 Selos. 3º Selo exige 1 Devoção Reprimida e 2 Haste na próxima Rodada; 2º exige 2 Devoções e 1 Haste; 1º exige 2 Devoções e 1 Haste. Enquanto possuir Selos, Base Skills causam +2% de dano por cada 4 Bleed no alvo, até +10%; a última Coin contra alvo com 20+ Bleed causa 20% de dano adicional. Após usar Skill 3, perde 1 Devoção. No fim da Rodada, com 30+ Falsa Fome, consome 10 e perde 1 Devoção. Ao chegar a 0 Devoção: ativa UNPACK, remove 1 Selo, ganha 10 Falsa Fome, recupera 5 SP e recebe a Devoção do novo estágio. Com 3 Selos, cair abaixo de 80% HP pela primeira vez ativa UNPACK imediatamente. Em 0 Selos, substitui S1, S2, S3 e Defensiva pelas versões libertas e transforma Possua-me, Ó Besta de Sangue em Ajoelhe-se, Ó Besta Indigna.",
+      "implementation": "connected"
+    }
+  ],
+  "combat_statuses": [
+    "Bleed",
+    "Falsa Fome",
+    "Falsa Fome consumida",
+    "Devoção Reprimida",
+    "Selos",
+    "UNPACK"
+  ],
+  "skills": [
+    {
+      "id": "please_a_little",
+      "slot": "S1",
+      "version": "sealed",
+      "uptie_required": 1,
+      "name": "Por Favor... Só um Pouco.",
+      "base_power": 4,
+      "coin_power": 3,
+      "coins": 2,
+      "sin": "Lust",
+      "sin_emoji": "1517713138433130566",
+      "damage_type": "Perfuração",
+      "attack_weight": 1,
+      "coin_emoji": "1539383048401854474",
+      "coin_emojis": [
+        "1517767753036071082",
+        "1517767821390647356"
+      ],
+      "quote": "Por favor... só um pouco. Eu prometo que saberei apreciar.",
+      "effect_lines": [
+        {
+          "trigger": "Ao Usar",
+          "parts": [
+            "Consuma até 10 ",
+            {
+              "icon": "false_hunger",
+              "label": "Falsa Fome"
+            },
+            "."
+          ]
+        },
+        {
+          "trigger": "Ao Vencer Clash",
+          "parts": [
+            "Ganhe 10 ",
+            {
+              "icon": "false_hunger",
+              "label": "Falsa Fome"
+            },
+            "."
+          ]
+        },
+        {
+          "coin": 1,
+          "trigger": "Ao Acertar",
+          "parts": [
+            "Inflija 3 ",
+            {
+              "icon": "bleed",
+              "label": "Bleed Potency"
+            },
+            "."
+          ]
+        },
+        {
+          "coin": 1,
+          "trigger": "Ao Acertar",
+          "parts": [
+            "Ganhe 5 ",
+            {
+              "icon": "false_hunger",
+              "label": "Falsa Fome"
+            },
+            "."
+          ]
+        },
+        {
+          "coin": 2,
+          "trigger": "Ao Acertar",
+          "parts": [
+            "Inflija 1 ",
+            {
+              "icon": "bleed",
+              "label": "Bleed Count"
+            },
+            "."
+          ]
+        }
+      ],
+      "description": "Consome e gera Falsa Fome enquanto aplica Bleed."
+    },
+    {
+      "id": "do_not_deny",
+      "slot": "S1",
+      "version": "unsealed",
+      "uptie_required": 4,
+      "name": "Não Ouse Me Negar.",
+      "base_power": 4,
+      "coin_power": 4,
+      "coins": 2,
+      "description": "[0 Selos] • Wrath • Perfuração • Geração: 20 • Consumo: até 15"
+    },
+    {
+      "id": "i_can_be_useful",
+      "slot": "S2",
+      "version": "sealed",
+      "uptie_required": 1,
+      "name": "Eu Posso Ser Útil.",
+      "base_power": 5,
+      "coin_power": 3,
+      "coins": 3,
+      "sin": "Gloom",
+      "sin_emoji": "1539383004814639225",
+      "damage_type": "Corte",
+      "damage_emoji": "1539383076424257556",
+      "attack_weight": 1,
+      "coin_emoji": "1539383048401854474",
+      "quote": "Eu consigo ajudar... veja. Só me diga o que devo fazer.",
+      "effect_lines": [
+        {
+          "trigger": "Ao Usar",
+          "parts": [
+            "Consuma até 20 ",
+            {
+              "icon": "false_hunger",
+              "label": "Falsa Fome"
+            },
+            "."
+          ]
+        },
+        {
+          "trigger": "Ao Usar",
+          "parts": [
+            "Se o alvo possuir 5+ ",
+            {
+              "icon": "bleed",
+              "label": "Bleed Potency"
+            },
+            ", ganhe +1 ",
+            {
+              "icon": "clash_up",
+              "label": "Clash Power"
+            },
+            "."
+          ]
+        },
+        {
+          "trigger": "Antes do Ataque",
+          "parts": [
+            "Para cada 20 ",
+            {
+              "icon": "false_hunger",
+              "label": "Falsa Fome"
+            },
+            " consumida neste Encounter, cause +5% de Dano com esta Skill (máx. +25%)."
+          ]
+        },
+        {
+          "trigger": "Ao Vencer Clash",
+          "parts": [
+            "Ganhe 10 ",
+            {
+              "icon": "false_hunger",
+              "label": "Falsa Fome"
+            },
+            "."
+          ]
+        },
+        {
+          "coin": 1,
+          "trigger": "Ao Acertar",
+          "parts": [
+            "Inflija 3 ",
+            {
+              "icon": "bleed",
+              "label": "Bleed Potency"
+            },
+            " e ganhe 5 ",
+            {
+              "icon": "false_hunger",
+              "label": "Falsa Fome"
+            },
+            "."
+          ]
+        },
+        {
+          "coin": 2,
+          "trigger": "Ao Acertar",
+          "parts": [
+            "Inflija 2 ",
+            {
+              "icon": "bleed",
+              "label": "Bleed Count"
+            },
+            " e ganhe 5 ",
+            {
+              "icon": "false_hunger",
+              "label": "Falsa Fome"
+            },
+            "."
+          ]
+        },
+        {
+          "coin": 3,
+          "trigger": "Ao Acertar",
+          "parts": [
+            "Inflija 3 ",
+            {
+              "icon": "bleed",
+              "label": "Bleed Potency"
+            },
+            " e ganhe 5 ",
+            {
+              "icon": "false_hunger",
+              "label": "Falsa Fome"
+            },
+            "."
+          ]
+        }
+      ],
+      "description": "Escala o dano com a Falsa Fome consumida no Encounter."
+    },
+    {
+      "id": "kneel",
+      "slot": "S2",
+      "version": "unsealed",
+      "uptie_required": 4,
+      "name": "Ajoelhe-se.",
+      "base_power": 5,
+      "coin_power": 4,
+      "coins": 3,
+      "description": "[0 Selos] • Pride • Corte • Consumo: até 30"
+    },
+    {
+      "id": "please_do_not_hurt",
+      "slot": "DEF",
+      "version": "sealed",
+      "uptie_required": 1,
+      "name": "Por Favor... Não me Machuque Muito.",
+      "base_power": 4,
+      "coin_power": 10,
+      "coins": 1,
+      "sin": "Gloom",
+      "sin_emoji": "1539383004814639225",
+      "damage_type": "Esquiva",
+      "damage_emoji": "1539383253641859114",
+      "attack_weight": 1,
+      "coin_emoji": "1539383017175515327",
+      "quote": "Desculpe... eu ainda preciso ficar inteira.",
+      "effect_lines": [
+        {
+          "trigger": "Ao Usar",
+          "parts": [
+            "Ganhe 10 ",
+            {
+              "icon": "false_hunger",
+              "label": "Falsa Fome"
+            },
+            "."
+          ]
+        },
+        {
+          "coin": 1,
+          "trigger": "Ao Desviar",
+          "parts": [
+            "Recupere 3% do HP máximo."
+          ]
+        },
+        {
+          "coin": 1,
+          "trigger": "Ao Desviar",
+          "parts": [
+            "Se o atacante possuir 3+ ",
+            {
+              "icon": "bleed",
+              "label": "Bleed"
+            },
+            ", cure 2% do HP máximo (máx. 10%)."
+          ]
+        },
+        {
+          "coin": 1,
+          "trigger": "Ao Desviar",
+          "parts": [
+            "Ganhe 5 ",
+            {
+              "icon": "false_hunger",
+              "label": "Falsa Fome"
+            },
+            " (máx. 15)."
+          ]
+        },
+        {
+          "trigger": "Final do ataque",
+          "parts": [
+            "Consuma 20 ",
+            {
+              "icon": "false_hunger",
+              "label": "Falsa Fome"
+            },
+            ", reduza 1 ",
+            {
+              "icon": "devotion",
+              "label": "Devoção Reprimida"
+            },
+            " (máx. 1)."
+          ]
+        }
+      ],
+      "description": "Esquiva que recupera HP e alimenta a Falsa Fome."
+    },
+    {
+      "id": "accept_my_offering",
+      "slot": "S3",
+      "version": "sealed",
+      "uptie_required": 3,
+      "name": "Aceite Minha Oferenda.",
+      "base_power": 6,
+      "coin_power": 4,
+      "coins": 3,
+      "description": "[3 / 2 / 1 Selos] • Lust • Perfuração • Geração: 35–50 • Consumo: até 30"
+    },
+    {
+      "id": "you_do_not_deserve_blood",
+      "slot": "S3",
+      "version": "unsealed",
+      "uptie_required": 4,
+      "name": "Você Não Merece Esse Sangue.",
+      "base_power": 7,
+      "coin_power": 4,
+      "coins": 4,
+      "description": "[0 Selos] • Wrath • Corte • Geração: 10–50 • Consumo: até 50"
+    }
+  ],
+  "roleplay_passives": [
+    {
+      "id": "falsa-fome-rp",
+      "name": "Falsa Fome",
+      "description": "Rosemary nunca teve a fome de uma Bloodfiend, então passou anos ensinando o próprio corpo a desejá-la. O que começou como condicionamento deliberado acabou se tornando canibalismo habitual; sangue e carne humana passaram a ser reconhecidos por ela como alimento, e o cheiro de sangue desperta uma fome que já não precisa ser fingida.",
+      "effects": [
+        "Pode se alimentar de sangue e carne humana.",
+        "+4 Percepção para detectar sangue, ferimentos recentes, manchas e rastros ensanguentados.",
+        "+4 Sobrevivência para rastrear criaturas sangrando.",
+        "Ao seguir alguém ativamente sangrando, pode utilizar Percepção no lugar de Sobrevivência.",
+        "Pode utilizar Percepção ou Medicina para analisar características simples de vestígios de sangue.",
+        "Pode utilizar Percepção no lugar de Investigação ao reconstruir acontecimentos através de sangue, ferimentos e rastros.",
+        "Pode identificar aproximadamente a direção de onde vem um cheiro perceptível de sangue.",
+        "Grandes quantidades de sangue podem ser percebidas sem teste, a critério do Mestre.",
+        "Pode perceber alterações evidentes em um rastro, como aumento ou diminuição do sangramento e mudanças bruscas de direção."
+      ],
+      "quote": "Dizem que minha fome é falsa. Meu estômago parece discordar."
+    },
+    {
+      "id": "adora-rp",
+      "name": "Conheça Aquilo que Adora",
+      "description": "Rosemary não estudou Bloodfiends por medo ou necessidade, mas por uma admiração quase devocional. Anos reunindo relatos, observando comportamentos e estudando Famílias, Kindreds e seus costumes fizeram dela uma especialista genuína na espécie que tanto deseja imitar.",
+      "effects": [
+        "+4 Atualidades para conhecimentos sobre Bloodfiends, Bloodbags, Kindreds, Famílias, alimentação, costumes e incidentes relacionados.",
+        "+2 Percepção ao analisar diretamente um Bloodfiend.",
+        "+2 Intuição para interpretar emoções, intenções e comportamentos de Bloodfiends.",
+        "Conhecimentos triviais sobre Bloodfiends que Rosemary razoavelmente conheceria não exigem teste.",
+        "Pode utilizar Atualidades para reconhecer Família, posição hierárquica, sinais de fome, hábitos ou características conhecidas.",
+        "Pode utilizar Atualidades no lugar de Diplomacia quando uma interação depender principalmente de etiqueta, terminologia, hierarquia ou costumes Bloodfiend.",
+        "Pode realizar Atualidades para reconhecer informações falsas, rumores ou contradições sobre Bloodfiends.",
+        "Após observar um Bloodfiend, pode utilizar Atualidades ou Percepção para relacionar seu comportamento a casos que já tenha estudado."
+      ],
+      "quote": "Como eu poderia desejar me tornar algo que não compreendo?"
+    },
+    {
+      "id": "predadora-rp",
+      "name": "Predadora Ensaiada",
+      "description": "Rosemary não nasceu com a presença intimidadora que tanto admira, então decidiu construí-la. Postura, sorriso, maneira de falar e pequenos maneirismos foram praticados durante anos até sua interpretação deixar de parecer exatamente uma interpretação.",
+      "effects": [
+        "+2 Enganação ao se passar por Bloodfiend ou sustentar sua falsa identidade.",
+        "+2 Intimidação quando utiliza sua suposta natureza Bloodfiend para ameaçar ou pressionar alguém.",
+        "Pode utilizar Artes para reproduzir maneirismos, postura e formas de falar de Bloodfiends que tenha observado.",
+        "Contra pessoas pouco familiarizadas com Bloodfiends, sua atuação pode ser convincente o suficiente para ser confundida com uma verdadeira.",
+        "Pode utilizar Enganação para disfarçar comportamentos que contradigam sua atuação.",
+        "Após observar suficientemente uma Bloodfiend específica, pode utilizar Artes para reproduzir parte de seus maneirismos.",
+        "Caso tenha tempo para preparar sua aparência e atuação, recebe +2 no primeiro teste de Enganação para sustentar sua falsa identidade naquela cena."
+      ],
+      "quote": "Não estou interpretando uma Bloodfiend. Estou corrigindo alguns erros de nascimento."
+    },
+    {
+      "id": "anatomia-rp",
+      "name": "Anatomia Predatória",
+      "description": "Rosemary estudou alimentação Bloodfiend e anatomia humana pelo mesmo motivo. Se pretendia beber sangue, precisava saber o que estava fazendo; e, sem depender de milagres para corrigir seus erros, aprender a cuidar das consequências tornou-se igualmente importante.",
+      "effects": [
+        "+2 Medicina para analisar ou tratar cortes, mordidas, hemorragias e ferimentos relacionados à perda de sangue.",
+        "Pode utilizar Medicina para determinar aproximadamente a gravidade de ferimentos observáveis e reconhecer padrões compatíveis com ataques de Bloodfiends.",
+        "Pode utilizar Medicina no lugar de Investigação quando a informação procurada depender exclusivamente da análise dos ferimentos de um corpo.",
+        "Pode analisar ferimentos para obter informações básicas sobre como foram provocados.",
+        "Com um Kit de Medicina, recebe +2 Medicina para tratar os próprios ferimentos.",
+        "Pode realizar primeiros socorros em si mesma sem penalidade adicional por ser a própria paciente."
+      ],
+      "quote": "Regeneração seria mais conveniente. Infelizmente, tive que aprender medicina."
+    }
+  ],
+  "narrative": {
+    "session_notes": [],
+    "relationships": [],
+    "bloodfiend_knowledge": [],
+    "inventory": [
+      "Kit de Medicina",
+      "notebook"
+    ],
+    "favorite_quotes": [],
+    "memories": []
+  }
+}

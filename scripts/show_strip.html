@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Fita lateral — resultado</title>
+<style>
+  body { background:#313338; color:#dbdee1; margin:0; padding:26px;
+         font:15px/1.55 "Segoe UI",system-ui,sans-serif; }
+  h1 { color:#f2f3f5; font-size:22px; margin:0 0 4px; }
+  h2 { color:#f2f3f5; font-size:15px; margin:24px 0 8px; }
+  p.sub { color:#949ba4; font-size:13px; margin:0 0 20px; max-width:760px; }
+  .row { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:18px; }
+  .cell { background:#18191c; border:1px solid #1e1f22; border-radius:8px;
+          padding:8px; }
+  .cap { color:#949ba4; font:12px ui-monospace,Consolas,monospace;
+         margin:0 0 6px; display:flex; justify-content:space-between; gap:14px; }
+  .cap b { color:#e8e8ec; font-weight:600; }
+  img.anim { display:block; width:460px; max-width:100%;
+             image-rendering:pixelated; border-radius:3px; }
+  img.path { display:block; max-width:100%; border-radius:4px; }
+  code { background:#1e1f22; padding:1px 5px; border-radius:3px; }
+</style>
+</head>
+<body>
+<h1>Fita lateral da previsão</h1>
+<p class="sub">Cinco GIFs, um por rótulo de <code>forecast_label()</code>. Canvas
+96&times;54, escala inteira 5&times;, nearest-neighbor, fonte 3&times;5 autorada.
+Os nomes passam da esquerda para a direita e travam no visor em
+<b>0,87&thinsp;s</b>.</p>
+
+<h2>Os cinco, animando</h2>
+<div class="row">
+  <div class="cell">
+    <p class="cap"><b>HOPELESS</b><span>&lt; 20% · 19 KB</span></p>
+    <img class="anim" src="../assets/gifs/roulette_hopeless.gif" alt="hopeless">
+  </div>
+  <div class="cell">
+    <p class="cap"><b>STRUGGLING</b><span>&lt; 40% · 19 KB</span></p>
+    <img class="anim" src="../assets/gifs/roulette_struggling.gif" alt="struggling">
+  </div>
+</div>
+<div class="row">
+  <div class="cell">
+    <p class="cap"><b>NEUTRAL</b><span>&lt; 60% · 19 KB</span></p>
+    <img class="anim" src="../assets/gifs/roulette_neutral.gif" alt="neutral">
+  </div>
+  <div class="cell">
+    <p class="cap"><b>FAVORED</b><span>&lt; 80% · 18 KB</span></p>
+    <img class="anim" src="../assets/gifs/roulette_favored.gif" alt="favored">
+  </div>
+  <div class="cell">
+    <p class="cap"><b>DOMINATING</b><span>&ge; 80% · 19 KB</span></p>
+    <img class="anim" src="../assets/gifs/roulette_dominating.gif" alt="dominating">
+  </div>
+</div>
+
+<h2>Percurso frame a frame — FAVORED</h2>
+<img class="path" src="sheet/strip_path.png" alt="percurso">
+
+<h2>Os cinco travados, lado a lado</h2>
+<img class="path" src="sheet/strip_five.png" alt="cinco travados">
+</body>
+</html>

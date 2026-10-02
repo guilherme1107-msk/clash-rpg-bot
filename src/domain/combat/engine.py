@@ -75,6 +75,27 @@ def estimate_clash(
     return Forecast(chance, label, label_pt)
 
 
+def prediction_with_paralysis(
+    left: Skill, left_sp: int, right: Skill, right_sp: int,
+    left_modifiers: Modifiers, right_modifiers: Modifiers, *,
+    simulations: int = 50,
+) -> Forecast:
+    """Previsão de Clash compartilhada por bot e Activity.
+
+    Viva em um único lugar para que as duas rotas nunca divirjam: antes o bot
+    usava 5 simulações e a Activity 50, e só o bot tinha a regra de Paralisia.
+    """
+    if left_modifiers.paralysis > 0 and right_modifiers.paralysis == 0:
+        return Forecast(0.0, "HOPELESS", "Sem esperança — Paralisia detectada")
+    if right_modifiers.paralysis > 0 and left_modifiers.paralysis == 0:
+        return Forecast(1.0, "DOMINATING", "Dominante — alvo com Paralisia")
+    return estimate_clash(
+        left, left_sp, right, right_sp,
+        left_modifiers=left_modifiers, right_modifiers=right_modifiers,
+        simulations=simulations,
+    )
+
+
 def resolve_defense(
     attack: Skill, attack_sp: int, defense: Skill, defense_sp: int, *,
     attack_modifiers: Modifiers | None = None,

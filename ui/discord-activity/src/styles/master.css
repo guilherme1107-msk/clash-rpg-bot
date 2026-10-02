@@ -1,0 +1,41 @@
+.master-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 900px) { .master-grid { grid-template-columns: 1fr; } }
+
+.master-column h2 { font-size: 15px; color: var(--color-accent); margin-bottom: 12px; }
+.master-column { display: grid; gap: 16px; align-content: start; }
+
+.enemy-roster { display: grid; gap: 14px; }
+.enemy-card {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-console);
+  padding: 16px;
+}
+.enemy-card header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.enemy-portrait {
+  width: 44px; height: 44px; object-fit: cover;
+  border: 1px solid var(--color-border-strong);
+  filter: saturate(0.8);
+}
+.enemy-card h3 { font-size: 15px; }
+.enemy-card header span { font-size: 9px; color: var(--color-text-dim); }
+.enemy-stats-row { display: flex; gap: 14px; font-size: 10px; color: var(--color-text-dim); margin: 6px 0 8px; }
+.enemy-stats-row strong { color: var(--color-text-main); }
+.enemy-statuses { border-top: 1px dashed var(--color-border); padding-top: 8px; margin-top: 4px; }
+
+.turn-controls {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-console);
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+}
+.round-badge { display: flex; align-items: baseline; gap: 8px; }
+.round-badge span { font-size: 9px; letter-spacing: 0.2em; color: var(--color-text-dim); }
+.round-badge strong { font: 700 26px var(--font-display); color: var(--color-accent); }
+
+.turn-order { list-style: decimal; margin: 0; padding-left: 20px; display: grid; gap: 5px; font-size: 11px; color: var(--color-text-dim); }
+.turn-order li.current { color: var(--color-accent); font-weight: 600; }

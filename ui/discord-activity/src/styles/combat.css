@@ -1,0 +1,98 @@
+.combat-screen, .master-dashboard {
+  max-width: 1400px;
+  margin: 20px auto 0;
+  display: grid;
+  gap: 20px;
+}
+
+.combat-screen-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.combat-screen-head h1 { font-size: clamp(22px, 3vw, 30px); }
+.back-link {
+  display: flex; align-items: center; gap: 6px;
+  color: var(--color-text-dim); text-decoration: none;
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  border: 1px solid var(--color-border); padding: 7px 11px;
+}
+.back-link svg { width: 14px; height: 14px; }
+.back-link:hover { color: var(--color-accent); border-color: var(--color-accent); }
+
+.section-hint { font-size: 11px; color: var(--color-text-dim); margin: 0 0 10px; }
+
+/* ---- Target selector / battlefield ---- */
+.target-selector {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-console);
+  padding: 18px;
+}
+.battlefield {
+  position: relative;
+  min-height: 220px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-content: flex-start;
+  border: 1px dashed var(--color-border);
+  padding: 20px;
+  touch-action: none;
+}
+.target-token {
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-bg-panel);
+  color: var(--color-text-main);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+.target-token.kind-enemy { border-color: #7a2b2b; }
+.target-token.kind-ally { border-color: #2b6a3a; }
+.target-token.selected { border-color: var(--color-accent); box-shadow: 0 0 0 1px var(--color-accent); }
+.target-name { font: 600 13px var(--font-display); }
+.target-hp { font-size: 9px; color: var(--color-text-dim); }
+
+.drag-reticle {
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border: 1px solid var(--color-accent);
+  border-radius: 50%;
+  color: var(--color-accent);
+  cursor: grab;
+  z-index: 5;
+  background: rgba(0,0,0,0.5);
+}
+.drag-reticle svg { width: 18px; height: 18px; }
+.drag-reticle:active { cursor: grabbing; }
+
+/* ---- Combat action panels ---- */
+.combat-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 700px) { .combat-actions-grid { grid-template-columns: 1fr; } }
+
+.combat-panel {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-console);
+  padding: 18px;
+}
+.combat-panel header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.combat-panel header svg { width: 16px; height: 16px; color: var(--color-accent); }
+.combat-panel h3 { font-size: 15px; }
+
+.skill-pick-list { display: grid; gap: 6px; margin-bottom: 14px; }
+.skill-pick {
+  display: flex; align-items: baseline; gap: 8px;
+  border: 1px solid var(--color-border); background: var(--color-bg-panel);
+  color: var(--color-text-main); padding: 9px 12px; text-align: left;
+}
+.skill-pick span { font-size: 8px; color: var(--color-text-faint); }
+.skill-pick strong { font-size: 12px; }
+.skill-pick small { margin-left: auto; color: var(--color-text-dim); font-size: 9px; }
+.skill-pick:hover { border-color: var(--color-accent); }

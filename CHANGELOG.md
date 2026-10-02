@@ -4,7 +4,91 @@ Todas as mudanças relevantes do projeto serão registradas neste arquivo.
 
 ## [Não publicado]
 
+### Amplitude Conversion → Tremor - Scorch — 2026-10-01
+
+- Novo efeito de skill `amplitude_conversion_scorch` (gatilho + valor flat,
+  como o Tremor Burst): converte o Tremor do alvo em **Tremor - Scorch**
+  preservando Potência e Count, fiel à regra de Amplitude Conversion do Limbus.
+  Sem Tremor ativo no alvo o efeito informa "sem efeito".
+- A variante mora na coluna `tremor_type` da própria linha de `tremor`
+  (migração automática nas duas tabelas de status), e não em status separado —
+  a pilha continua sendo a mesma. Editores da Activity e da Central de
+  Controle preservam o tipo salvo quando o payload não envia outro válido.
+- Burst em Tremor - Scorch (regra da wiki): dano = (Potência de Tremor + Burn)
+  ÷ 2, arredondado para baixo, depois −1 Burn Count; sem Burn ativo o dano é
+  Tremor ÷ 2. Sem Sin Affinity no bot, é dano normal aplicado pelo mestre.
+- Exibição: o painel de status, a ficha e o log da rodada passam a rotular a
+  pilha como **Tremor - Scorch** (ícone do Tremor Burst), inclusive no
+  decaimento do fim da rodada.
+- Testes novos em `testes/test_tremor.py` (domínio + sintaxe) e
+  `testes/test_database.py` (round-trip, upsert, fim de rodada e grupo hostil).
+
+### Organização do repositório e licença — 2026-09-29
+
+- Projeto movido de `Documents\Codex\2026-08-23\...\clash-rpg-bot` para
+  `Documents\clash-rpg-bot`. Como é o mesmo disco, o move virou um rename de
+  0,05 s; `.venv`, `discord.py` e os 117 testes foram validados logo em seguida.
+- A UI Electron da Rosemary saiu de `ui/rosemary-panel` e agora vive **fora do
+  repositório**, em `Documents\Rosemary game\rosemary-panel`. Os backups
+  `rosemary-panel.rar` e `rosemary-panel.zip` (469 MB) foram para
+  `Documents\Rosemary game\_backup-archives\`. Nenhum código do bot referenciava
+  essa pasta — `rosemary_panel.py` e `rosemary_content.json` seguem na raiz.
+- `electron/main.cjs` do painel agora resolve o caminho do bot por
+  `CLASH_BOT_DIR`, com fallback para o caminho relativo legado; sem bot
+  encontrado ele simplesmente não tenta subir a Central.
+- Adicionado `LICENSE` com a **GNU GPL v3.0**, mais uma seção no README
+  explicando o que a licença cobre e, principalmente, o que ela **não** cobre
+  (GIFs, emojis e demais materiais de terceiros).
+- `.gitignore` completado e reorganizado por seções. Antes, `clash_rpg.sqlite3-wal`
+  (4,1 MB), `clash_rpg.sqlite3-shm` e `ClashBot.exe` (1,9 MB) **não** eram
+  cobertos por nenhuma regra. Agora valem curingas genéricos para
+  `node_modules/`, `dist/`, `*.exe`, `*.sqlite3-*`, `*.rar`/`*.zip` e `backups/`.
+  Validação por matcher próprio: **0 vazamentos** em 156 caminhos versionados.
+- O registro completo das decisões, com tempos de execução, está em
+  [MUDANCAS-2026-09-29.md](MUDANCAS-2026-09-29.md).
+
+### Atualização operacional — 2026-08-31
+
+- Integrantes de grupos hostis agora entram no Encounter individualmente, usando Skills da ficha-base e mantendo SP, HP, modificadores e status próprios. Uma derrota no Clash reduz somente a Sanidade do integrante envolvido.
+- O painel de ação hostil foi ajustado para colunas flexíveis, preparado para novos controles sem sobrepor a ficha.
+- Consolidada a divisão: Activity escolhe e exibe; bot resolve rolagens,
+  dano, efeitos e embeds; Núcleo Geral valida, registra e persiste.
+- Adicionados eventos/auditoria do Núcleo Geral e comandos da Sentinela para
+  consulta de diagnóstico e perguntas operacionais.
+- A Activity passou a exibir tela de carregamento, logo do ClashBot, layout de
+  ficha revisado, controles de dano recebido, Vida Máxima, Light e Stagger.
+- Vida cresce automaticamente com nível; os dois limites de Stagger são
+  calculados a 20% e 50% da Vida Máxima.
+- Skills são organizadas como S1, S2, S3, variações S3-x e defensivas; o
+  seletor de Clash inclui skills defensivas compatíveis.
+- Efeitos foram reforçados: seletores começam vazios, validação tolera dados
+  ausentes, efeitos iguais são consolidados e aplicações são registradas.
+- Sanidade, efeitos e recursos de combate passaram a circular pelo fluxo
+  autoritativo do bot antes de refletirem no Encounter.
+- Hostis ganharam ficha visual, imagem por colar/anexar, grupos de inimigos
+  iguais que herdam a ficha-base e recursos individuais por integrante.
+- Ações hostis no campo exigem alvo participante; ações abertas ao final da
+  Declaração viram ataque sem oposição contra esse alvo.
+- Adicionada fila de ataques livres hostis para fim de turno, em modo sem
+  oposição ou follow-up.
+- Corrigidos bloqueios de avanço causados por status inválidos e removido o
+  controle redundante que conflitaria com o fluxo de fases.
+- App Composer agora rastreia mensagem, servidor e canal; mensagens rastreadas
+  podem ser listadas, editadas e apagadas na Central.
+
 ### Alterado
+
+- Os botões antigos de ficha e Oficina de Skills do `/painel` agora direcionam para a Activity e não carregam mais os editores em embeds.
+
+- Removidos os frontends antigos Rosemary, Character Panel e Configurable Panel, já substituídos pela Discord Activity.
+- Removidos pacotes de handoff, staging temporário e o esqueleto `v2` duplicado após sua arquitetura ser incorporada em `src/`.
+
+- Iniciada a separação funcional entre Activity, bot, núcleo de aplicação e persistência.
+- Cálculos de nível, atributos, HP, Stagger, Light, Offense e Defense foram movidos para um serviço compartilhado e testável.
+- SQLite passou a usar WAL, espera de contenção e sincronização adequada para o uso simultâneo pela Activity, bot e Central.
+- A Activity ganhou cache curto e limitado para validações repetidas do Discord durante a abertura das telas.
+- O trabalhador de mídia do bot passou a reutilizar a conexão HTTP, reduzindo custo e criação de recursos.
+- O `/painel` agora explica claramente o que pertence à Activity, ao bot e ao núcleo.
 
 - O Discord App Composer foi integrado à Central de Controle, com formatação, prévia, emojis do app/servidor e envio pelo próprio ClashBot.
 - O Composer ganhou auditoria de emojis em todos os servidores registrados, seleção dos ausentes e importação confirmada para os emojis próprios do aplicativo.

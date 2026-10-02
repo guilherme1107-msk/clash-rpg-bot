@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><title>Preview – Imperfect Eye of Precognition</title>
+<style>
+  body { background:#1a1b1e; font-family: sans-serif; padding: 30px; }
+  b { font-weight: bold; }
+</style>
+</head>
+<body>
+
+<script>
+function esc(s){ return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''; }
+
+function formatEgoPreviewHTML(desc, tier, name) {
+  if(!desc) return '<span style="color:#777">Sem efeito cadastrado.</span>';
+  var isAleph = tier >= 5;
+  var tierRoman = {1:'I',2:'II',3:'III',4:'IV',5:'V'};
+  var tierStr = tierRoman[tier] || String(tier);
+
+  function discordEmoji(text) {
+    return text.replace(/<:(\w+):(\d+)>/g, function(_,n,id){
+      return '<img src="https://cdn.discordapp.com/emojis/'+id+'.webp?size=48" style="height:20px;vertical-align:middle;margin:0 2px" title="'+n+'">';
+    });
+  }
+
+  var kws = ['Tremor Burst','Tremor Count','Tremor - Scorch','Amplitude Conversion',
+    'Glimpse of Precognition','Coin Power','Clash Power','Final Power',
+    'Base Power','Offense Level','Defense Level','Bloodfeast','Tremor','Burn','Bleed'];
+  var kwPat = new RegExp('('+kws.map(function(k){return k.replace(/-/g,'\\-').replace(/\s/g,'\\s');}).join('|')+')', 'gi');
+  function applyKw(t){ return t.replace(kwPat,'<b style="text-decoration:underline">$1</b>'); }
+  function colorNums(t){ return t.replace(/(\+\d+)/g,'<b style="color:#e05252">$1</b>'); }
+
+  var rawLines = desc.split('\n');
+  var firstPlain = true;
+  var parts = [];
+
+  for(var i=0;i<rawLines.length;i++){
+    var line = rawLines[i];
+    var tr = line.trim();
+
+    if(!tr){ parts.push('<div style="height:8px"></div>'); continue; }
+
+    if(/^\[efeito se aplica ao usu/i.test(tr)){
+      parts.push('<div style="font-weight:bold;color:#d1d5db;margin-bottom:3px">[Efeito se aplica ao usuário]</div>');
+      firstPlain=false; continue;
+    }
+
+    if(tr.charAt(0)==='-'){
+      var c = discordEmoji(tr.slice(1).trim());
+      c = c.replace(/\[Clash Win\]/gi,'<b style="color:#e05252">[Clash Win]</b>');
+      c = c.replace(/\[Ao Critar\]/gi,'<b style="color:#e05252">[Ao Critar]</b>');
+      c = c.replace(/\[Primeira Rodada\]/gi,'<b style="color:gold">[Primeira Rodada]</b>');
+      c = applyKw(c);
+      c = colorNums(c);
+      parts.push('<div style="color:#d1d5db;margin-bottom:2px;line-height:1.55">-'+c+'</div>');
+      firstPlain=false; continue;
+    }
+
+    var hasDEmoji = /<:[\w]+:\d+>/.test(tr);
+    var startsKw = kws.some(function(k){return tr.toLowerCase().indexOf(k.toLowerCase())===0;});
+    if(hasDEmoji || startsKw){
+      var c2 = discordEmoji(tr);
+      c2 = applyKw(c2);
+      parts.push('<div style="font-weight:bold;font-size:15px;color:#e1e4e8;text-decoration:underline;margin:12px 0 4px 0;display:flex;align-items:center;gap:4px">'+c2+'</div>');
+      firstPlain=false; continue;
+    }
+
+    if(firstPlain){
+      parts.push('<div style="color:#888;font-size:12px;margin-bottom:6px">'+discordEmoji(tr)+'</div>');
+      firstPlain=false; continue;
+    }
+
+    var c3=discordEmoji(tr); c3=applyKw(c3); c3=colorNums(c3);
+    parts.push('<div style="color:#aaa;font-size:12px;margin-bottom:3px">'+c3+'</div>');
+  }
+
+  var alephStr = isAleph ? ' [<span style="font-family:serif;font-weight:900">ℵ</span>]' : '';
+  return '<div style="background:#111316;border:1px solid #2a2d35;border-radius:8px;padding:16px 18px;font-size:13px;font-family:sans-serif;line-height:1.5;color:#e1e4e8;max-width:620px">'
+    +'<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;flex-wrap:wrap">'
+    +'<span style="font-size:24px;font-weight:900;color:#e05252;font-style:italic;line-height:1">'+tierStr+'</span>'
+    +'<span style="font-size:18px;font-weight:800;color:#fff;line-height:1"> › '+esc(name)+alephStr+'</span>'
+    +'</div>'
+    +'<div>'+parts.join('')+'</div>'
+    +'</div>';
+}
+
+var desc = `Uma prótese de alguém
+[Efeito se aplica ao usuário]
+-Em Clash, ganhe 1 <:GlimpseofPrecognition:1553633485090988052> Glimpse of Precognition em todo Clash Win. Infrinja 2 Tremor e Burn no alvo (10 vezes por habilidade)
+-[Clash Win] Ative Amplitude Conversion em Tremor - Scorch e ative Tremor Burst no alvo principal. Alvo perde 1 Tremor Count
+-[Ao Critar] Ative Tremor Burst. Alvo perde 1 Tremor Count (2 vezes por rodada)
+
+<:GlimpseofPrecognition:1553633485090988052> Glimpse of Precognition
+-Max Stack: 5
+
+-+1 Clash Power para cada Stack
+-Cada 2 Stack:
+-Habilidades de moedas positivas, ganham +1 Coin Power
+-Habilidades de moedas negativas, ganham +2 Final Power
+-Expira na próxima rodada depois de chegar em 5 Stack`;
+
+document.write(formatEgoPreviewHTML(desc, 5, 'Imperfect Eye of Precognition'));
+</script>
+</body>
+</html>

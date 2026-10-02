@@ -1,0 +1,215 @@
+/* ---------------------------------------------------------- */
+/* Button                                                        */
+/* ---------------------------------------------------------- */
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--color-border-strong);
+  background: transparent;
+  color: var(--color-text-main);
+  padding: 9px 14px;
+  font: 600 10px var(--font-body);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.ui-button svg { width: 14px; height: 14px; }
+
+.ui-button:hover { background: rgba(255,255,255,0.04); }
+
+.ui-button.variant-solid {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #100b0c;
+}
+.ui-button.variant-solid:hover { background: var(--color-accent-strong); }
+
+.ui-button.variant-ghost {
+  border-color: var(--color-border);
+  color: var(--color-text-dim);
+}
+
+.ui-button.variant-danger {
+  border-color: #8a2b2b;
+  color: #e08b8b;
+}
+
+.ui-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---------------------------------------------------------- */
+/* Inputs                                                        */
+/* ---------------------------------------------------------- */
+.ui-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 10px;
+  color: var(--color-text-dim);
+}
+
+.ui-field span {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 9px;
+}
+
+.ui-field input, .ui-field textarea {
+  background: var(--color-bg-panel);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-main);
+  padding: 8px 10px;
+  font: 500 12px var(--font-body);
+}
+
+.ui-field textarea { resize: vertical; min-height: 70px; }
+
+.ui-field input:focus, .ui-field textarea:focus {
+  border-color: var(--color-accent);
+}
+
+.ui-field-number input { max-width: 100px; }
+
+/* ---------------------------------------------------------- */
+/* Modal                                                         */
+/* ---------------------------------------------------------- */
+.ui-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(4,4,5,0.86);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(10px, 4vw, 50px);
+  overflow-y: auto;
+}
+
+.ui-modal {
+  width: min(880px, 100%);
+  background: var(--color-bg-console);
+  border: 1px solid var(--color-border-strong);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+}
+
+.ui-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 22px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ui-modal-head .eyebrow {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  margin-bottom: 5px;
+}
+
+.ui-modal-head h2 { font-size: 22px; }
+
+.ui-modal-close {
+  border: 1px solid var(--color-border);
+  background: none;
+  color: var(--color-text-dim);
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  flex: none;
+}
+.ui-modal-close svg { width: 16px; height: 16px; }
+.ui-modal-close:hover { color: var(--color-text-main); border-color: var(--color-accent); }
+
+.ui-modal-body {
+  padding: 22px;
+  max-height: 70vh;
+  overflow-y: auto;
+  display: grid;
+  gap: 20px;
+}
+
+.ui-modal-foot {
+  padding: 16px 22px;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@media (max-width: 520px) {
+  .ui-modal-overlay { padding: 0; }
+  .ui-modal { width: 100%; min-height: 100vh; }
+}
+
+/* ---------------------------------------------------------- */
+/* CombatMeter                                                   */
+/* ---------------------------------------------------------- */
+.combat-meter { margin-bottom: 12px; }
+.combat-meter-head {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  font-size: 10px; color: var(--color-text-dim); letter-spacing: 0.08em;
+}
+.combat-meter-head strong { font: 600 18px var(--font-display); color: var(--color-text-main); }
+.combat-meter-head i { font-style: normal; color: var(--color-text-faint); margin: 0 3px; }
+.combat-meter-track {
+  height: 8px; background: rgba(255,255,255,0.05); margin-top: 6px;
+  border: 1px solid var(--color-border); overflow: hidden;
+}
+.combat-meter-track span { display: block; height: 100%; }
+.combat-meter.tone-hp .combat-meter-track span { background: linear-gradient(90deg, #6a0d18, var(--color-accent-strong)); }
+.combat-meter.tone-sp .combat-meter-track span { background: linear-gradient(90deg, #183a51, #4386a7); }
+.combat-meter.tone-stagger .combat-meter-track span { background: linear-gradient(90deg, #5f471b, #c5973e); }
+.combat-meter.tone-light .combat-meter-track span { background: linear-gradient(90deg, #3d5f1b, #9ec53e); }
+
+/* ---------------------------------------------------------- */
+/* ResourceMeter                                                 */
+/* ---------------------------------------------------------- */
+.resource-meter { margin-bottom: 10px; }
+.resource-meter-head {
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: var(--color-text-dim);
+}
+.resource-meter-head strong { color: var(--color-text-main); }
+.resource-meter-head i { font-style: normal; color: var(--color-text-faint); margin: 0 2px; }
+.resource-meter-track {
+  height: 5px; background: rgba(255,255,255,0.05); margin-top: 5px; overflow: hidden;
+}
+.resource-meter-track span { display: block; height: 100%; background: var(--color-accent); }
+.resource-meter small { display: block; margin-top: 4px; font-size: 9px; color: var(--color-text-faint); }
+
+/* ---------------------------------------------------------- */
+/* EntityCard (skills, passivas, status)                         */
+/* ---------------------------------------------------------- */
+.entity-card {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-panel);
+  padding: 15px;
+  position: relative;
+  overflow: hidden;
+  min-height: 120px;
+}
+.entity-card::after {
+  content: '';
+  position: absolute;
+  width: 60px; height: 2px;
+  background: var(--color-accent);
+  right: -15px; top: 14px;
+  transform: rotate(35deg);
+  opacity: 0.7;
+}
+.entity-card-head {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 9px; letter-spacing: 0.14em; color: var(--color-accent);
+}
+.entity-card-head em { font-style: normal; font-size: 8px; color: var(--color-text-dim); }
+.entity-card h3 { font-size: 17px; margin: 9px 0 6px; }
+.entity-card-body { font-size: 10.5px; line-height: 1.55; color: var(--color-text-dim); }
+.entity-card.is-active { border-color: var(--color-accent); background: color-mix(in srgb, var(--color-accent) 8%, var(--color-bg-panel)); }
+.entity-card.kind-negative { border-color: #7a2b2b; }
+.entity-card.kind-positive { border-color: #2b6a3a; }

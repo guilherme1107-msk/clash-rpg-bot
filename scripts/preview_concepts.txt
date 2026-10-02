@@ -1,0 +1,195 @@
+Composição do dano — só moedas, sem percentual nem escudo
+O caso mais simples. Repare que o escudo e o % aparecem como ±0: dizer 'não houve' é mais honesto que omitir a linha.
+
+##########################################################################
+TITLE : 〔 DAMAGE RESOLUTION 〕
+COLOR : #b31824
+DESCRIPTION:
+    ## Yi Sang  ➜  Cavaleiro Aberrante
+    `CORTE ASCENDENTE`
+  〔 DANO FINAL 〕
+      ## 28
+  ◈ DE ONDE VEIO O DANO
+      `▰▰▰▰▰▰▰▰▰▰▰▰` **+26**  Moedas
+      `▰▱▱▱▱▱▱▱▱▱▱▱` **+2**  Nível
+      `▱▱▱▱▱▱▱▱▱▱▱▱` _+0_  % Dano
+      `▱▱▱▱▱▱▱▱▱▱▱▱` _+0_  Escudo
+  CADEIA
+      `26` → `28` → `28` → `28`
+      `sem` modificador percentual
+[289 chars / 3 fields]
+##########################################################################
+
+Composição do dano — com escudo absorvendo 4
+Aqui a trilha é o que explica a conversa: o golpe valia 28 e o escudo cobriu 4. É a pergunta mais comum em mesa.
+
+##########################################################################
+TITLE : 〔 DAMAGE RESOLUTION 〕
+COLOR : #b31824
+DESCRIPTION:
+    ## Yi Sang  ➜  Cavaleiro Aberrante
+    `Corte Ascendente` + `Poço Sinuoso`
+  〔 DANO FINAL 〕
+      ## 24
+  ◈ DE ONDE VEIO O DANO
+      `▰▰▰▰▰▰▰▰▰▰▰▰` **+26**  Moedas
+      `▰▱▱▱▱▱▱▱▱▱▱▱` **+2**  Nível
+      `▱▱▱▱▱▱▱▱▱▱▱▱` _+0_  % Dano
+      `▰▰▱▱▱▱▱▱▱▱▱▱` **−4**  Escudo
+  CADEIA
+      `26` → `28` → `28` → `24`
+      `sem` modificador percentual
+[308 chars / 3 fields]
+##########################################################################
+
+Escada de status — pilha cheia, quase no teto e expirada
+O caso `sinking` expirado é o ponto: a pilha some mas continua visível. Se o campo simplesmente sumisse, o mestre leria bug.
+
+##########################################################################
+TITLE : 【 PILHA DE EFEITOS 】
+COLOR : #b31824
+DESCRIPTION:
+    ## Leitura de pilhas antes do Clash
+  <:Bleed:1539383114957070397> Bleed
+      `▰▰▰▰····` `potência 4` de 8
+      └ `3` aplicações • dura `3` turnos de status
+  <:Burn:1539383118191140914> Burn
+      `▰▰······` `potência 2` de 8
+      └ `5` aplicações • dura `5` turnos de status
+  <:Tremor:1539383133772714015> Tremor
+      `▰▰▰▰▰▰··` `potência 6` de 8
+      └ `1` aplicação • dura `1` turno de status
+  <:Rupture:1539383143298240523> Rupture
+      `▰·······` `potência 1` de 8
+      └ `2` aplicações • dura `2` turnos de status
+  <:Sinking:1539383130371391589> Sinking
+      `········` **expirado** — a pilha zerou neste turno
+FOOTER: Largura = Potência (teto 8) • a linha de baixo é Quantidade
+[633 chars / 5 fields]
+##########################################################################
+
+Termômetro de sanidade — o grupo inteiro de uma vez
+O que o embed atual não mostra é a posição no intervalo. Com a escala, Don Quixote em −45 e Hong Lu em +45 ficam obviamente opostos, e o zero de Meursault é legível sem contas.
+
+##########################################################################
+TITLE : 〔 LCB // REGISTRO DE SINNER 〕
+COLOR : #b31824
+DESCRIPTION:
+    ## Sanidade do grupo
+    ``▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█████████████████████`
+    `−45` ◀ zero ▶ `+45`
+    ▁ cauda • █ head • a agulha é a ficha`
+  Yi Sang  ·  `-20 SP`
+      `▁▁▁▁▁▁▁▁▁▁▁◀▁▁▁▁▁▁▁▁█████████████████████`
+      `30% HEADS`
+  Faust  ·  `+15 SP`
+      `▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁███████▶█████████████`
+      `65% HEADS`
+  Meursault  ·  `+0 SP`
+      `▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁◆████████████████████`
+      `50% HEADS`
+  Hong Lu  ·  `+45 SP`
+      `▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁████████████████████▶`
+      `95% HEADS`
+  Don Quixote  ·  `-45 SP`
+      `◀▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█████████████████████`
+      `5% HEADS`
+FOOTER: A agulha é a ficha no intervalo −45..+45 • ◆ marca o zero exato
+[594 chars / 5 fields]
+##########################################################################
+
+Fita de fases — preparação
+Mesma função nos quatro estados. A fita não muda de forma, então o olho aprende a posição de cada fase uma vez só.
+
+##########################################################################
+TITLE : 〔 ⚔ COMBAT ENCOUNTER ⚠ 〕
+COLOR : #caa44b
+DESCRIPTION:
+    # Portão Sul — Turno 04
+    **`◆ Preparação`**  →  `◇ Declaração`  →  `◇ Resolução`  →  `◇ Completo`
+  ◇ ESTADO
+      `TURNO 04 • PREPARAÇÃO`
+      Os Sinner escolhem Skill e a ação hostil. Nada é rolado ainda.
+FOOTER: ✓ feito • ◆ agora • ◇ pendente
+[244 chars / 1 fields]
+##########################################################################
+
+Fita de fases — declaração
+Mesma função nos quatro estados. A fita não muda de forma, então o olho aprende a posição de cada fase uma vez só.
+
+##########################################################################
+TITLE : 〔 ⚔ COMBAT ENCOUNTER ⚠ 〕
+COLOR : #caa44b
+DESCRIPTION:
+    # Portão Sul — Turno 04
+    `✓ Preparação`  →  **`◆ Declaração`**  →  `◇ Resolução`  →  `◇ Completo`
+  ◇ ESTADO
+      `TURNO 04 • DECLARAÇÃO`
+      Tudo declarado. Fecha quando o último confirmar a escolha.
+FOOTER: ✓ feito • ◆ agora • ◇ pendente
+[240 chars / 1 fields]
+##########################################################################
+
+Fita de fases — resolução
+Mesma função nos quatro estados. A fita não muda de forma, então o olho aprende a posição de cada fase uma vez só.
+
+##########################################################################
+TITLE : 〔 ⚔ COMBAT ENCOUNTER ⚠ 〕
+COLOR : #caa44b
+DESCRIPTION:
+    # Portão Sul — Turno 05
+    `✓ Preparação`  →  `✓ Declaração`  →  **`◆ Resolução`**  →  `◇ Completo`
+  ◇ ESTADO
+      `TURNO 05 • RESOLUÇÃO`
+      O bot rola, resolve e persiste. O resultado vai para o canal.
+FOOTER: ✓ feito • ◆ agora • ◇ pendente
+[242 chars / 1 fields]
+##########################################################################
+
+Fita de fases — completo
+Mesma função nos quatro estados. A fita não muda de forma, então o olho aprende a posição de cada fase uma vez só.
+
+##########################################################################
+TITLE : 〔 ⚔ COMBAT ENCOUNTER ⚠ 〕
+COLOR : #caa44b
+DESCRIPTION:
+    # Portão Sul — Turno 05
+    `✓ Preparação`  →  `✓ Declaração`  →  `✓ Resolução`  →  **`◆ Completo`**
+  ◇ ESTADO
+      `TURNO 05 • COMPLETO`
+      Turno fechado. Use /batalha iniciar para abrir outra operação.
+FOOTER: ✓ feito • ◆ agora • ◇ pendente
+[242 chars / 1 fields]
+##########################################################################
+
+Rastreio de moedas — perdeu a R02, decidiu na R03
+A R02 mostra quem estava ganhando antes de virar. A distância entre os poderes é o que permite ver *quando* o jogo virou.
+
+##########################################################################
+TITLE : 〔 RESULTADO CONFIRMADO 〕
+COLOR : #b31824
+DESCRIPTION:
+    ## 🏆 Yi Sang
+    **30** ⇠ decidiu por **8** ⇢ **22**
+  ◈ RASTREIO DAS MOEDAS
+         `R01` <:MH:1539383250902978680><:MH:1539383250902978680><:MN:1539383048401854474> **26** ◆ **19** ▰ <:MN:1539383048401854474><:MN:1539383048401854474><:MH:1539383250902978680>
+         `R02` <:MN:1539383048401854474><:MH:1539383250902978680><:MN:1539383048401854474> **21** ◇ **24**  <:MH:1539383250902978680><:MH:1539383250902978680><:MH:1539383250902978680>
+      ◀◀◀`R03` <:MH:1539383250902978680><:MH:1539383250902978680><:MH:1539383250902978680> **30** ◆ **22** ▰ <:MN:1539383048401854474><:MH:1539383250902978680><:MN:1539383048401854474>
+FOOTER: ◀◀◀ decidiu • barra central = diferença de poder • `🔁` empate
+[689 chars / 1 fields]
+##########################################################################
+
+Rastreio de moedas — goleada de uma rodada
+O extremo oposto: barra cheia e uma única linha. A leitura é instantânea e mostra que nem houve disputa.
+
+##########################################################################
+TITLE : 〔 RESULTADO CONFIRMADO 〕
+COLOR : #b31824
+DESCRIPTION:
+    ## 🏆 Yi Sang
+    **41** ⇠ decidiu por **19** ⇢ **22**
+  ◈ RASTREIO DAS MOEDAS
+      ◀◀◀`R01` <:MH:1539383250902978680><:MH:1539383250902978680><:MH:1539383250902978680> **41** ◆ **22** ▰▰▰ <:MN:1539383048401854474><:MH:1539383250902978680><:MN:1539383048401854474>
+FOOTER: ◀◀◀ decidiu • barra central = diferença de poder • `🔁` empate
+[335 chars / 1 fields]
+##########################################################################

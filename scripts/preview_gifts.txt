@@ -1,0 +1,153 @@
+Bloco de E.G.O Gifts na ficha
+A ficha já soma gift + status no mesmo campo de modificadores, e o mestre não consegue dizer de onde veio cada ponto. O gift é a única fonte permanente: vale mostrar separado.
+
+##########################################################################
+TITLE : 〔 LCB // REGISTRO DE SINNER 〕
+COLOR : #b31824
+DESCRIPTION:
+    ## Fiore
+    `IDENTIDADE VINCULADA: Fiore`
+  ◈ SANIDADE
+      ```+0 SP
+      50% HEADS```
+  ◆ OFFENSE LEVEL
+      ```0```
+  ◇ DEFENSE LEVEL
+      ```0```
+  ◈ E.G.O GIFTS // 3 ATIVO(S)
+      `T5` **Ahab's Blind Rage** ★★★★★
+      　<:Offense_Up:1539383245005651968> **+3** Offense Level  <:Defense_Up:1539383241604210802>🔻 **-2** Defense Level
+      `T3` **Second-Hand Harmonium** ★★★
+      　<:PCD:1539418616112357466> **-1** Coin Power  <:Clash_Up:1539383211992551636> **+3** Clash Power
+      `T1` **Cornerstone of Quiet** ★
+      　<:Defense_Up:1539383241604210802>🔺 **+1** Defense Level
+  ◈ SOMA QUE ENTRA NO CLASH
+      <:PCD:1539418616112357466> **-1** Coin Power  <:Clash_Up:1539383211992551636> **+3** Clash Power  <:Offense_Up:1539383245005651968> **+3** Offense Level  <:Defense_Up:1539383241604210802>🔻 **-1** Defense Level
+FOOTER: LIMBUS // gift soma com status e efeitos temporários no mesmo Clash
+[837 chars / 5 fields]
+##########################################################################
+
+Catálogo: a silhueta de cada gift
+Nada aqui precisa de código novo: as 5 colunas já entram no Clash. O que muda é a leitura — o par de ícones já diz o que o gift faz.
+
+##########################################################################
+TITLE : 【 CATÁLOGO // E.G.O GIFTS 】
+COLOR : #caa44b
+DESCRIPTION:
+    ## Candidatos para o roster
+    Cada linha é a silhueta que o olho lê
+  `T5` ★★★★★ Ahab's Blind Rage
+      <:Offense_Up:1539383245005651968> **+3** Offense Level  <:Defense_Up:1539383241604210802>🔻 **-2** Defense Level
+      *O mais legível do lote: 🔺+3 e 🔻−2 no MESMO par de ícones.*
+  `T5` ★★★★★ The Weight of a Promise
+      <:PCB:1539418618134007880> **+4** Coin Power
+      *O oposto do Ahab: um número só, grande. Bom para quem quer saber o valor antes.*
+  `T4` ★★★★ Widow's Lace
+      <:Attack_Up:1539383111668990094> **+1** Base Power  <:Defense_Up:1539383241604210802>🔺 **+2** Defense Level
+      *Quase positiva, mas paga em Base Power. Bom para quem defende e revida.*
+  `T3` ★★★ Second-Hand Harmonium
+      <:PCD:1539418616112357466> **-1** Coin Power  <:Clash_Up:1539383211992551636> **+3** Clash Power
+      *A diagonal ⚡+3 / 💰−1. Compensa Clash, não vai bem com Coin.*
+  `T2` ★★ Sleeve of the Second Hand
+      <:Attack_Up:1539383111668990094> **+2** Base Power  <:Clash_Up:1539383211992551636> **+1** Clash Power
+      *A dobradiça ⚔+2 / ⚡+1. Sustenta o começo e o fim da rolagem.*
+  `T1` ★ Cornerstone of Quiet
+      <:Defense_Up:1539383241604210802>🔺 **+1** Defense Level
+      *Eixo único de defesa. O gift que todo mundo aceita sem pensar.*
+FOOTER: T rola, ★ é a legenda; mods somam sem teto — por isso o trade-off está dentro de cada gift
+[1277 chars / 6 fields]
+##########################################################################
+
+Loadout — loadout 1 — só positivos
+Se os gifts só somam e não há teto, este é o dominante: pega tudo. Nenhum downside, nenhuma decisão.
+
+##########################################################################
+TITLE : 〔 PROVA DE TRADE-OFF 〕
+COLOR : #b31824
+DESCRIPTION:
+    ## Loadout 1 — só positivos
+  ◈ E.G.O GIFTS // 3 ATIVO(S)
+      `T5` **The Weight of a Promise** ★★★★★
+      　<:PCB:1539418618134007880> **+4** Coin Power
+      `T2` **Sleeve of the Second Hand** ★★
+      　<:Attack_Up:1539383111668990094> **+2** Base Power  <:Clash_Up:1539383211992551636> **+1** Clash Power
+      `T1` **Cornerstone of Quiet** ★
+      　<:Defense_Up:1539383241604210802>🔺 **+1** Defense Level
+  ◈ SOMA QUE ENTRA NO CLASH
+      <:Attack_Up:1539383111668990094> **+2** Base Power  <:PCB:1539418618134007880> **+4** Coin Power  <:Clash_Up:1539383211992551636> **+1** Clash Power  <:Defense_Up:1539383241604210802>🔺 **+1** Defense Level
+  ◈ CONSEQUÊNCIA NO PRONÓSTICO
+      Com estes gifts: **100%** `DOMINATING`
+      Contra estes gifts: **66%** `FAVORED`
+      Mesma skill, mesmo par: o equipment decide a previsão.
+FOOTER: Se os gifts só somam e não há teto, este é o dominante: pega tudo. Nenhum downside, nenhuma decisão.
+[880 chars / 3 fields]
+##########################################################################
+
+Loadout — loadout 2 — clash + casca
+Troca Coin Power por Clash Power e aceita um pouco de Base. Ganha a disputa, perde na escala.
+
+##########################################################################
+TITLE : 〔 PROVA DE TRADE-OFF 〕
+COLOR : #b31824
+DESCRIPTION:
+    ## Loadout 2 — Clash + casca
+  ◈ E.G.O GIFTS // 3 ATIVO(S)
+      `T4` **Widow's Lace** ★★★★
+      　<:Attack_Up:1539383111668990094> **+1** Base Power  <:Defense_Up:1539383241604210802>🔺 **+2** Defense Level
+      `T3` **Second-Hand Harmonium** ★★★
+      　<:PCD:1539418616112357466> **-1** Coin Power  <:Clash_Up:1539383211992551636> **+3** Clash Power
+      `T1` **Cornerstone of Quiet** ★
+      　<:Defense_Up:1539383241604210802>🔺 **+1** Defense Level
+  ◈ SOMA QUE ENTRA NO CLASH
+      <:Attack_Up:1539383111668990094> **+1** Base Power  <:PCD:1539418616112357466> **-1** Coin Power  <:Clash_Up:1539383211992551636> **+3** Clash Power  <:Defense_Up:1539383241604210802>🔺 **+3** Defense Level
+  ◈ CONSEQUÊNCIA NO PRONÓSTICO
+      Com estes gifts: **100%** `DOMINATING`
+      Contra estes gifts: **96%** `DOMINATING`
+      Mesma skill, mesmo par: o equipment decide a previsão.
+FOOTER: Troca Coin Power por Clash Power e aceita um pouco de Base. Ganha a disputa, perde na escala.
+[919 chars / 3 fields]
+##########################################################################
+
+Loadout — loadout 3 — canhão de vidro
+Abaixa a própria defesa em troca de Offense Level. Só faz sentido se o alvo não sobreviver ao primeiro golpe.
+
+##########################################################################
+TITLE : 〔 PROVA DE TRADE-OFF 〕
+COLOR : #b31824
+DESCRIPTION:
+    ## Loadout 3 — canhão de vidro
+  ◈ E.G.O GIFTS // 2 ATIVO(S)
+      `T5` **Ahab's Blind Rage** ★★★★★
+      　<:Offense_Up:1539383245005651968> **+3** Offense Level  <:Defense_Up:1539383241604210802>🔻 **-2** Defense Level
+      `T5` **The Weight of a Promise** ★★★★★
+      　<:PCB:1539418618134007880> **+4** Coin Power
+  ◈ SOMA QUE ENTRA NO CLASH
+      <:PCB:1539418618134007880> **+4** Coin Power  <:Offense_Up:1539383245005651968> **+3** Offense Level  <:Defense_Up:1539383241604210802>🔻 **-2** Defense Level
+  ◈ CONSEQUÊNCIA NO PRONÓSTICO
+      Com estes gifts: **100%** `DOMINATING`
+      Contra estes gifts: **94%** `DOMINATING`
+      Mesma skill, mesmo par: o equipment decide a previsão.
+FOOTER: Abaixa a própria defesa em troca de Offense Level. Só faz sentido se o alvo não sobreviver ao primeiro golpe.
+[762 chars / 3 fields]
+##########################################################################
+
+O limite: gift condicional
+Vale registrar porque é o gift mais interessante da lista e também o único que o schema sozinho não entrega. Ele já tem coluna, falta leitura.
+
+##########################################################################
+TITLE : 〔 O QUE PRECISA DE CÓDIGO 〕
+COLOR : #e67e22
+DESCRIPTION:
+    ## Conditional gift
+    `ego_gifts.effects_json` já existe no schema e é gravado por `save_ego_gift`, mas nenhum cálculo o lê.
+  EXEMPLO
+      **Wound That Remembers**
+      `Ao vencer Clash: +1 Coin Power permanente para o resto do turno`
+      
+      Não cabe em coluna numérica porque depende do resultado. Precisaria de um hook como o de `The Family's Resentment` (bot.py:562), e esse hook hoje é uma comparação de nome.
+  ◇ O QUE JÁ EXISTE PARA COPIAR
+      `The Family's Resentment` — cura 30% do dano, máx 20 (bot.py:562-567)
+      `has_carousel` — lido em bot.py:558 e nunca usado: código morto
+FOOTER: Trace DIAG // o que o motor não faz ainda
+[622 chars / 2 fields]
+##########################################################################

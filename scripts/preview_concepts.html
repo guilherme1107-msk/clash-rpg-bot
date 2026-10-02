@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang=pt-BR><head><meta charset=UTF-8><title>Conceitos de embed</title><style>
+:root { color-scheme: dark; }
+body { background:#313338; color:#dbdee1; font:15px/1.5 "gg sans","Segoe UI",system-ui,sans-serif;
+       margin:0; padding:32px 24px 80px; }
+h1 { color:#f2f3f5; font-size:24px; margin:0 0 4px; }
+p.sub { color:#949ba4; margin:0 0 10px; max-width:760px; }
+p.disc { color:#949ba4; font-size:12px; margin:0 0 30px; }
+h2 { color:#f2f3f5; font-size:16px; margin:0 0 4px; }
+p.gap { color:#e6a23c; font-size:13px; margin:0 0 10px; max-width:600px; }
+.card { max-width:600px; margin:0 0 34px; }
+.grid { background:#2b2d31; border-radius:8px; padding:12px 0; border-left:4px solid #888; }
+.body { padding:2px 16px 2px 12px; }
+.title { color:#fff; font-weight:700; font-size:16px; margin-bottom:6px; }
+.desc { color:#dbdee1; font-size:15px; margin:4px 0 8px; }
+.big { font-size:20px; font-weight:700; color:#fff; margin:6px 0; }
+.field { margin:6px 0; }
+.fname { color:#fff; font-weight:600; font-size:14px; margin-bottom:2px; }
+.fval { color:#dbdee1; font-size:14px; }
+.code { display:block; background:#1e1f22; border:1px solid #2b2d31; border-radius:4px;
+        padding:2px 6px; margin:2px 0; font:13px ui-monospace,Consolas,monospace;
+        color:#b5bac1; white-space:pre-wrap; }
+.footer { color:#949ba4; font-size:12px; margin-top:10px; }
+</style></head><body><h1>Conceitos: decoração que carrega informação</h1><p class=sub>Cada bloco começa pelo que falta no embed atual. Se a decoração não muda a decisão do mestre, ela não entra.</p><p class=sub><b>Fora de escopo por decisão do autor:</b> a curva de prognóstico (estimate_clash precisa ser barato) e o pulso de HP (o HP muda por fora do bot, então o embed mentiria).</p><div class="card"><h2>Composição do dano — só moedas, sem percentual nem escudo</h2><p class="gap">O caso mais simples. Repare que o escudo e o % aparecem como ±0: dizer &#x27;não houve&#x27; é mais honesto que omitir a linha.</p><div class="grid" style="border-left-color:#b31824"><div class="body">
+<div class="title">〔 DAMAGE RESOLUTION 〕</div>
+<div class="desc"><div class="big">Yi Sang  ➜  Cavaleiro Aberrante</div><br>CORTE ASCENDENTE</div>
+<div class="field"><div class="fname">〔 DANO FINAL 〕</div><div class="fval"><div class="big">28</div></div></div>
+<div class="field"><div class="fname">◈ DE ONDE VEIO O DANO</div><div class="fval">▰▰▰▰▰▰▰▰▰▰▰▰ <b>+26</b>  Moedas<br>▰▱▱▱▱▱▱▱▱▱▱▱ <b>+2</b>  Nível<br>▱▱▱▱▱▱▱▱▱▱▱▱ _+0_  % Dano<br>▱▱▱▱▱▱▱▱▱▱▱▱ _+0_  Escudo</div></div>
+<div class="field"><div class="fname">CADEIA</div><div class="fval">26 → 28 → 28 → 28<br>sem modificador percentual</div></div>
+</div></div></div><div class="card"><h2>Composição do dano — com escudo absorvendo 4</h2><p class="gap">Aqui a trilha é o que explica a conversa: o golpe valia 28 e o escudo cobriu 4. É a pergunta mais comum em mesa.</p><div class="grid" style="border-left-color:#b31824"><div class="body">
+<div class="title">〔 DAMAGE RESOLUTION 〕</div>
+<div class="desc"><div class="big">Yi Sang  ➜  Cavaleiro Aberrante</div><br>Corte Ascendente + Poço Sinuoso</div>
+<div class="field"><div class="fname">〔 DANO FINAL 〕</div><div class="fval"><div class="big">24</div></div></div>
+<div class="field"><div class="fname">◈ DE ONDE VEIO O DANO</div><div class="fval">▰▰▰▰▰▰▰▰▰▰▰▰ <b>+26</b>  Moedas<br>▰▱▱▱▱▱▱▱▱▱▱▱ <b>+2</b>  Nível<br>▱▱▱▱▱▱▱▱▱▱▱▱ _+0_  % Dano<br>▰▰▱▱▱▱▱▱▱▱▱▱ <b>−4</b>  Escudo</div></div>
+<div class="field"><div class="fname">CADEIA</div><div class="fval">26 → 28 → 28 → 24<br>sem modificador percentual</div></div>
+</div></div></div><div class="card"><h2>Escada de status — pilha cheia, quase no teto e expirada</h2><p class="gap">O caso `sinking` expirado é o ponto: a pilha some mas continua visível. Se o campo simplesmente sumisse, o mestre leria bug.</p><div class="grid" style="border-left-color:#b31824"><div class="body">
+<div class="title">【 PILHA DE EFEITOS 】</div>
+<div class="desc"><div class="big">Leitura de pilhas antes do Clash</div></div>
+<div class="field"><div class="fname">&lt;:Bleed:1539383114957070397&gt; Bleed</div><div class="fval">▰▰▰▰···· potência 4 de 8<br>└ 3 aplicações • dura 3 turnos de status</div></div>
+<div class="field"><div class="fname">&lt;:Burn:1539383118191140914&gt; Burn</div><div class="fval">▰▰······ potência 2 de 8<br>└ 5 aplicações • dura 5 turnos de status</div></div>
+<div class="field"><div class="fname">&lt;:Tremor:1539383133772714015&gt; Tremor</div><div class="fval">▰▰▰▰▰▰·· potência 6 de 8<br>└ 1 aplicação • dura 1 turno de status</div></div>
+<div class="field"><div class="fname">&lt;:Rupture:1539383143298240523&gt; Rupture</div><div class="fval">▰······· potência 1 de 8<br>└ 2 aplicações • dura 2 turnos de status</div></div>
+<div class="field"><div class="fname">&lt;:Sinking:1539383130371391589&gt; Sinking</div><div class="fval">········ <b>expirado</b> — a pilha zerou neste turno</div></div>
+<div class="footer">Largura = Potência (teto 8) • a linha de baixo é Quantidade</div>
+</div></div></div><div class="card"><h2>Termômetro de sanidade — o grupo inteiro de uma vez</h2><p class="gap">O que o embed atual não mostra é a posição no intervalo. Com a escala, Don Quixote em −45 e Hong Lu em +45 ficam obviamente opostos, e o zero de Meursault é legível sem contas.</p><div class="grid" style="border-left-color:#b31824"><div class="body">
+<div class="title">〔 LCB // REGISTRO DE SINNER 〕</div>
+<div class="desc"><div class="big">Sanidade do grupo</div><br>▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█████████████████████<br>−45 ◀ zero ▶ +45<br>▁ cauda • █ head • a agulha é a ficha</div>
+<div class="field"><div class="fname">Yi Sang  ·  -20 SP</div><div class="fval">▁▁▁▁▁▁▁▁▁▁▁◀▁▁▁▁▁▁▁▁█████████████████████<br>30% HEADS</div></div>
+<div class="field"><div class="fname">Faust  ·  +15 SP</div><div class="fval">▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁███████▶█████████████<br>65% HEADS</div></div>
+<div class="field"><div class="fname">Meursault  ·  +0 SP</div><div class="fval">▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁◆████████████████████<br>50% HEADS</div></div>
+<div class="field"><div class="fname">Hong Lu  ·  +45 SP</div><div class="fval">▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁████████████████████▶<br>95% HEADS</div></div>
+<div class="field"><div class="fname">Don Quixote  ·  -45 SP</div><div class="fval">◀▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█████████████████████<br>5% HEADS</div></div>
+<div class="footer">A agulha é a ficha no intervalo −45..+45 • ◆ marca o zero exato</div>
+</div></div></div><div class="card"><h2>Fita de fases — preparação</h2><p class="gap">Mesma função nos quatro estados. A fita não muda de forma, então o olho aprende a posição de cada fase uma vez só.</p><div class="grid" style="border-left-color:#caa44b"><div class="body">
+<div class="title">〔 ⚔ COMBAT ENCOUNTER ⚠ 〕</div>
+<div class="desc"><div class="big">Portão Sul — Turno 04</div><br><b>◆ Preparação</b>  →  ◇ Declaração  →  ◇ Resolução  →  ◇ Completo</div>
+<div class="field"><div class="fname">◇ ESTADO</div><div class="fval">TURNO 04 • PREPARAÇÃO<br>Os Sinner escolhem Skill e a ação hostil. Nada é rolado ainda.</div></div>
+<div class="footer">✓ feito • ◆ agora • ◇ pendente</div>
+</div></div></div><div class="card"><h2>Fita de fases — declaração</h2><p class="gap">Mesma função nos quatro estados. A fita não muda de forma, então o olho aprende a posição de cada fase uma vez só.</p><div class="grid" style="border-left-color:#caa44b"><div class="body">
+<div class="title">〔 ⚔ COMBAT ENCOUNTER ⚠ 〕</div>
+<div class="desc"><div class="big">Portão Sul — Turno 04</div><br>✓ Preparação  →  <b>◆ Declaração</b>  →  ◇ Resolução  →  ◇ Completo</div>
+<div class="field"><div class="fname">◇ ESTADO</div><div class="fval">TURNO 04 • DECLARAÇÃO<br>Tudo declarado. Fecha quando o último confirmar a escolha.</div></div>
+<div class="footer">✓ feito • ◆ agora • ◇ pendente</div>
+</div></div></div><div class="card"><h2>Fita de fases — resolução</h2><p class="gap">Mesma função nos quatro estados. A fita não muda de forma, então o olho aprende a posição de cada fase uma vez só.</p><div class="grid" style="border-left-color:#caa44b"><div class="body">
+<div class="title">〔 ⚔ COMBAT ENCOUNTER ⚠ 〕</div>
+<div class="desc"><div class="big">Portão Sul — Turno 05</div><br>✓ Preparação  →  ✓ Declaração  →  <b>◆ Resolução</b>  →  ◇ Completo</div>
+<div class="field"><div class="fname">◇ ESTADO</div><div class="fval">TURNO 05 • RESOLUÇÃO<br>O bot rola, resolve e persiste. O resultado vai para o canal.</div></div>
+<div class="footer">✓ feito • ◆ agora • ◇ pendente</div>
+</div></div></div><div class="card"><h2>Fita de fases — completo</h2><p class="gap">Mesma função nos quatro estados. A fita não muda de forma, então o olho aprende a posição de cada fase uma vez só.</p><div class="grid" style="border-left-color:#caa44b"><div class="body">
+<div class="title">〔 ⚔ COMBAT ENCOUNTER ⚠ 〕</div>
+<div class="desc"><div class="big">Portão Sul — Turno 05</div><br>✓ Preparação  →  ✓ Declaração  →  ✓ Resolução  →  <b>◆ Completo</b></div>
+<div class="field"><div class="fname">◇ ESTADO</div><div class="fval">TURNO 05 • COMPLETO<br>Turno fechado. Use /batalha iniciar para abrir outra operação.</div></div>
+<div class="footer">✓ feito • ◆ agora • ◇ pendente</div>
+</div></div></div><div class="card"><h2>Rastreio de moedas — perdeu a R02, decidiu na R03</h2><p class="gap">A R02 mostra quem estava ganhando antes de virar. A distância entre os poderes é o que permite ver *quando* o jogo virou.</p><div class="grid" style="border-left-color:#b31824"><div class="body">
+<div class="title">〔 RESULTADO CONFIRMADO 〕</div>
+<div class="desc"><div class="big">🏆 Yi Sang</div><br><b>30</b> ⇠ decidiu por <b>8</b> ⇢ <b>22</b></div>
+<div class="field"><div class="fname">◈ RASTREIO DAS MOEDAS</div><div class="fval">   R01 &lt;:MH:1539383250902978680&gt;&lt;:MH:1539383250902978680&gt;&lt;:MN:1539383048401854474&gt; <b>26</b> ◆ <b>19</b> ▰ &lt;:MN:1539383048401854474&gt;&lt;:MN:1539383048401854474&gt;&lt;:MH:1539383250902978680&gt;<br>   R02 &lt;:MN:1539383048401854474&gt;&lt;:MH:1539383250902978680&gt;&lt;:MN:1539383048401854474&gt; <b>21</b> ◇ <b>24</b>  &lt;:MH:1539383250902978680&gt;&lt;:MH:1539383250902978680&gt;&lt;:MH:1539383250902978680&gt;<br>◀◀◀R03 &lt;:MH:1539383250902978680&gt;&lt;:MH:1539383250902978680&gt;&lt;:MH:1539383250902978680&gt; <b>30</b> ◆ <b>22</b> ▰ &lt;:MN:1539383048401854474&gt;&lt;:MH:1539383250902978680&gt;&lt;:MN:1539383048401854474&gt;</div></div>
+<div class="footer">◀◀◀ decidiu • barra central = diferença de poder • 🔁 empate</div>
+</div></div></div><div class="card"><h2>Rastreio de moedas — goleada de uma rodada</h2><p class="gap">O extremo oposto: barra cheia e uma única linha. A leitura é instantânea e mostra que nem houve disputa.</p><div class="grid" style="border-left-color:#b31824"><div class="body">
+<div class="title">〔 RESULTADO CONFIRMADO 〕</div>
+<div class="desc"><div class="big">🏆 Yi Sang</div><br><b>41</b> ⇠ decidiu por <b>19</b> ⇢ <b>22</b></div>
+<div class="field"><div class="fname">◈ RASTREIO DAS MOEDAS</div><div class="fval">◀◀◀R01 &lt;:MH:1539383250902978680&gt;&lt;:MH:1539383250902978680&gt;&lt;:MH:1539383250902978680&gt; <b>41</b> ◆ <b>22</b> ▰▰▰ &lt;:MN:1539383048401854474&gt;&lt;:MH:1539383250902978680&gt;&lt;:MN:1539383048401854474&gt;</div></div>
+<div class="footer">◀◀◀ decidiu • barra central = diferença de poder • 🔁 empate</div>
+</div></div></div></body></html>

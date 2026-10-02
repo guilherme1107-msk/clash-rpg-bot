@@ -1,0 +1,294 @@
+/* ---------------------------------------------------------- */
+/* Topbar                                                       */
+/* ---------------------------------------------------------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 68px;
+  border-bottom: 1px solid var(--color-border-strong);
+  position: relative;
+  z-index: 2;
+}
+
+.topbar .brand-mark {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  display: grid;
+  place-items: center;
+  transform: rotate(45deg);
+  flex: none;
+}
+
+.topbar .brand-mark span {
+  transform: rotate(-45deg);
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.topbar .brand-copy p {
+  margin: 0 0 2px;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+}
+
+.topbar .brand-copy h1 {
+  font-size: clamp(20px, 2.6vw, 30px);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.topbar .brand-copy h1 em {
+  color: var(--color-accent);
+  font-style: normal;
+}
+
+.topbar-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.role-badge {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  border: 1px solid var(--color-border);
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.role-badge svg { width: 13px; height: 13px; }
+.role-badge.master { color: var(--color-accent); border-color: var(--color-accent); }
+
+/* ---------------------------------------------------------- */
+/* Layout principal: retrato + console                          */
+/* ---------------------------------------------------------- */
+.sheet-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 34%) 1fr;
+  gap: 22px;
+  max-width: 1400px;
+  margin: 22px auto 0;
+}
+
+@media (max-width: 900px) {
+  .sheet-layout { grid-template-columns: 1fr; }
+}
+
+.portrait-panel {
+  position: relative;
+  border: 1px solid var(--color-border);
+  background: linear-gradient(150deg, var(--color-bg-panel), var(--color-bg) 70%);
+  overflow: hidden;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.portrait-panel::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.portrait-frame {
+  position: absolute;
+  inset: 0;
+}
+
+.portrait-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  background: #090809;
+  filter: saturate(0.85) contrast(1.05);
+}
+
+.portrait-frame.state-wounded img { filter: saturate(0.6) contrast(1.1) brightness(0.7) hue-rotate(-6deg); }
+.portrait-frame.state-altered img { filter: saturate(1.15) contrast(1.15) brightness(0.85) hue-rotate(15deg); }
+
+.portrait-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 40%, var(--color-bg) 95%);
+}
+
+.portrait-identity {
+  position: relative;
+  z-index: 3;
+  padding: 22px 24px;
+}
+
+.portrait-identity .eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.portrait-identity h2 {
+  font-size: clamp(22px, 3vw, 30px);
+  border-left: 3px solid var(--color-accent);
+  padding-left: 12px;
+}
+
+.portrait-identity .title {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+  padding-left: 15px;
+  margin-top: 4px;
+}
+
+.portrait-identity blockquote {
+  margin: 14px 0 0;
+  padding-left: 15px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--color-text-dim);
+}
+
+.state-tag {
+  position: absolute;
+  z-index: 3;
+  top: 16px;
+  right: 16px;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border: 1px solid var(--color-border-strong);
+  background: rgba(0,0,0,0.4);
+  padding: 5px 9px;
+  color: var(--color-text-dim);
+}
+
+.console-panel {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-console);
+  padding: 22px;
+  min-width: 0;
+  position: relative;
+}
+
+.console-panel::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(255,255,255,0.04);
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------- */
+/* Navegação por abas (Limbus Style)                            */
+/* ---------------------------------------------------------- */
+.tab-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px solid #4a3237;
+  padding-bottom: 4px;
+  margin-top: 14px;
+  position: relative;
+}
+
+.tab-nav .nav-label {
+  align-self: center;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #c9a463;
+  padding: 4px 8px;
+  border-left: 2px solid #b31824;
+  background: rgba(179, 24, 36, 0.08);
+  margin-right: 2px;
+}
+
+.tab-nav .nav-label-narrative {
+  border-left-color: #c9a463;
+  background: rgba(201, 164, 99, 0.08);
+}
+
+.tab-nav button {
+  border: 1px solid #36292d;
+  background: #0d0a0b;
+  color: var(--color-text-dim);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font: 600 10px var(--font-body);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  clip-path: polygon(0 0, 94% 0, 100% 25%, 100% 100%, 0 100%);
+}
+
+.tab-nav button svg { width: 14px; height: 14px; color: #88746d; transition: color 0.15s ease; }
+
+.tab-nav button:hover {
+  color: #f0e6dd;
+  border-color: #63434a;
+  background: #171013;
+}
+
+.tab-nav button:hover svg {
+  color: #d2ad69;
+}
+
+.tab-nav button.active {
+  color: #f3e6d8;
+  border-color: #8c3241;
+  background: linear-gradient(180deg, #241116 0%, #150a0d 100%);
+  box-shadow: inset 0 -2px 0 #b31824, 0 0 14px rgba(179, 24, 36, 0.25);
+}
+
+.tab-nav button.active svg {
+  color: #e5bd75;
+}
+
+.tab-content {
+  padding: 20px 2px 4px;
+}
+
+/* ---------------------------------------------------------- */
+/* Rodapé                                                       */
+/* ---------------------------------------------------------- */
+.app-footer {
+  max-width: 1400px;
+  margin: 18px auto 0;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: var(--color-text-faint);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+}
+
+@media (max-width: 520px) {
+  .sheet-layout { gap: 14px; }
+  .portrait-panel { min-height: 320px; }
+  .tab-nav button span.label-text { display: none; }
+  .tab-nav button { padding: 10px; }
+}

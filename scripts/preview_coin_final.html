@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>coin_flip — pixel art</title>
+<style>
+  body { background:#313338; color:#dbdee1; margin:0; padding:28px;
+         font:15px/1.55 "Segoe UI",system-ui,sans-serif; }
+  h1 { color:#f2f3f5; font-size:22px; margin:0 0 4px; }
+  h2 { color:#f2f3f5; font-size:15px; margin:26px 0 8px; }
+  p.sub { color:#949ba4; font-size:13px; margin:0 0 20px; max-width:740px; }
+  .pair { display:flex; gap:18px; flex-wrap:wrap; }
+  .box { background:#18191c; border:1px solid #1e1f22; border-radius:8px;
+         padding:10px; }
+  .box img { display:block; width:480px; max-width:100%;
+             image-rendering:pixelated; }
+  .cap { color:#949ba4; font:12px ui-monospace,Consolas,monospace;
+         margin:0 0 8px; }
+  .note { color:#e6a23c; font-size:13px; margin:22px 0 0; max-width:740px; }
+  code { background:#1e1f22; padding:1px 5px; border-radius:3px; }
+  table { border-collapse:collapse; font:12px ui-monospace,Consolas,monospace; }
+  td, th { padding:3px 9px; border-bottom:1px solid #3a3c41; text-align:left; }
+  th { color:#949ba4; }
+  .held { color:#6ea8fe; }
+</style>
+</head>
+<body>
+<h1>coin_flip em pixel art</h1>
+<p class=sub>Canvas 80&times;45, escala inteira 6&times; com NEAREST. 17 frames,
+1,83 s, 19 KB cada. O GIF vetorial anterior pesava 393 KB —
+20&times; mais pesado e sem cara de pixel art.</p>
+
+<h2>As duas variantes, lado a lado</h2>
+<div class="pair">
+  <div>
+    <p class="cap">coin_heads.gif — cai em HEADS</p>
+    <div class="box"><img src="../assets/gifs/coin_heads.gif" alt="heads"></div>
+  </div>
+  <div>
+    <p class="cap">coin_tails.gif — cai em TAILS</p>
+    <div class="box"><img src="../assets/gifs/coin_tails.gif" alt="tails"></div>
+  </div>
+</div>
+
+<p class="note">A variante existe porque o GIF pode deixar de ser enfeite: o bot
+tem o forecast na mao antes de publicar o embed, entao pode publicar a moeda
+do lado que o prognostico favorece.</p>
+
+<h2>Storyboard com a duracao real de cada frame</h2>
+<table>
+<tr><th>frame</th><th>ms</th><th>papel</th></tr>
+<tr><td>f0</td><td>90</td><td>antecipacao: achata antes de subir</td></tr>
+<tr><td>f1</td><td>60</td><td>lancamento: estica na direcao do movimento</td></tr>
+<tr><td>f2–f5</td><td>60–70</td><td>topo da rotacao, verso a mostra</td></tr>
+<tr><td>f6–f7</td><td>75–80</td><td>achata ate o perfil: a linha</td></tr>
+<tr><td>f8–f10</td><td>80–90</td><td>sai do perfil, ainda verso</td></tr>
+<tr><td>f11</td><td>95</td><td>virada: a face aparece no ar</td></tr>
+<tr><td>f12</td><td>110</td><td>pouso</td></tr>
+<tr><td>f13</td><td>90</td><td>amortecao: o peso do impacto</td></tr>
+<tr><td>f14</td><td class="held">600</td><td>SEGURA no resultado</td></tr>
+<tr><td>f15</td><td>140</td><td>volta ao repouso</td></tr>
+</table>
+
+<p class="note">O timing e deliberadamente desigual: 60 ms no topo da rotacao
+contra 600 ms parado no resultado. &Eacute; o que segura a leitura — com
+fps uniforme a moeda parece um gif gen&eacute;rico e o olho nao tem onde
+descansar.</p>
+</body>
+</html>
