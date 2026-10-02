@@ -6276,14 +6276,22 @@ async def personagem_status(interaction: discord.Interaction, jogador: discord.M
     await interaction.response.send_message(embed=character_embed(row, jogador), view=view)
 
 
-@personagem.command(name="niveis", description="Mestre: define Offense e Defense Level")
-@app_commands.checks.has_permissions(manage_guild=True)
+@personagem.command(name="niveis", description="Define Offense e Defense Level")
 async def personagem_nivel(interaction: discord.Interaction, jogador: discord.Member, offense: int, defense: int) -> None:
+    # Liberado para todo mundo (decisão do autor, 2026-10-02). Antes era
+    # `has_permissions(manage_guild=True)`. O botão "Editar níveis" do
+    # CharacterView JÁ era livre e só mexe nos próprios níveis — este slash
+    # command é que mexe na ficha de **qualquer** pessoa.
+    #
+    # A resposta virou efêmera: `/personagem sanidade` já é assim, e sem isso
+    # qualquer jogador spammaria o canal com a ficha de quem chamasse.
+    # O `audit` também: o comando é público agora, e fica registrado quem mexeu.
     row = db.set_levels(gid(interaction), jogador.id, offense, defense)
     if row is None:
         await interaction.response.send_message("Esse jogador ainda não criou uma ficha.", ephemeral=True)
         return
-    await interaction.response.send_message(embed=character_embed(row, jogador))
+    audit(interaction, "NÍVEIS", f"alvo={jogador} offense={offense} defense={defense}")
+    await interaction.response.send_message(embed=character_embed(row, jogador), ephemeral=True)
 
 
 @personagem.command(name="sanidade", description="Mestre: altera SP (valor positivo ou negativo)")
