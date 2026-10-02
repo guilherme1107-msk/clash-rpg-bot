@@ -923,6 +923,90 @@ regra.
 são agora todas reais: as **2** do escudo do Livro, "inimigos restantes" do
 Reminiscence, e a afinidade (fora de escopo).
 
+---
+
+## ✅ Git instalado e o trabalho versionado (2026-10-01, 22:0x)
+
+**Git 2.55.0.5** instalado via `winget install --id Git.Git`. O projeto **nunca
+tinha sido commitado** — o `origin` estava parado em 23/08/2026 e 205 arquivos
+ficaram fora.
+
+**3 commits no branch `feature/refactor-architecture`** (o `main` do remoto
+continua intocado em `f081634`):
+
+| | |
+|---|---|
+| `53b3635` | `.gitignore`: `tmp_*.txt`, `*.tmp`, `*.bak`, `*.orig` |
+| `7a1bf89` | 205 arquivos — E.G.O Gifts, refactor, Activity, launcher, docs, LICENSE |
+| `51b252d` | `.gitattributes` — fixa a quebra de linha no repositório |
+
+**Push feito** (`4e32acb..51b252d`), **fast-forward** — o remoto já tinha esse
+branch em `4e32acb`, que é onde o primeiro commit foi aplicado. Sem force.
+
+### O que teve de resolver
+
+1. **`safe.directory`** — a pasta é de `CodexSandboxOnline` (sandbox efêmero,
+   o perfil nem existe mais em `C:\Users`) e eu rodo como `Usuário`, então o
+   git recusava com *"dubious ownership"*. Entrou no `.gitconfig` do perfil
+   `Usuário`. Como o perfil do sandbox não existe mais, essa mesma linha serve
+   para as duas pontas.
+2. **Identidade** — não havia `user.name`/`user.email`. O autor confirmou que
+   `guilherme1107-msk <guilherme231907@gmail.com>` é dele.
+3. **`core.autocrlf=true`** avisava *"LF will be replaced by CRLF"* em ~110
+   arquivos. Isso é config de máquina, não do projeto: duas pessoas com
+   `autocrlf` diferente veem diffs que não existem. O `.gitattributes` fixa LF
+   no índice e na pasta, com exceção de `.bat`/`.cmd`/`.ps1`/`.psm1` (CRLF),
+   e declara os binários para o git nunca normalizá-los.
+   **O índice já estava todo em LF**, então isso não mudou uma linha do
+   conteúdo versionado.
+
+### Conhecido, deixado de fora de propósito
+
+**7 arquivos com quebra de linha misturada na pasta de trabalho** (índice ok):
+`.env.example` · `ARCHITECTURE.md` · `CHANGELOG.md` · `README.md` ·
+`src/domain/models/combat.py` · `start_control_center.bat` ·
+`testes/test_database.py` · `testes/test_engine.py`.
+
+Não foram normalizados porque `src/domain/models/combat.py` e
+`testes/test_database.py` **estão sendo editados por outra sessão** — reescrever
+o arquivo inteiro por causa de EOL colidiria com o trabalho dela. Se
+normalizados sozinhos no próximo checkout de cada um.
+
+---
+
+## ✅ The Family's Resentment LIGADO no banco real (2026-10-01, 23:37)
+
+O código da cura, do `max 3` e do `(Compartilhado)` estava pronto desde 21:3x,
+mas o gift estava com **0 cláusulas** no banco — nada disparava. Agora tem as
+**3**, validadas uma a uma contra o motor **antes** de gravar (é que
+`_effects_from_row` descarta cláusula inválida em silêncio, e um gift
+"gravado mas meio escrito" é o pior estado possível):
+
+```
+after_attack         heal_from_damage  v=30  cond=inflicted_bleed            max=20
+session_round_start  base_power        v=1                                     (max 3/rodada)
+session_round_start  offense_level     v=1   cond=shared_bloodfeast_consumed  max=6
+```
+
+**Conferência depois de gravar:** 3 gravadas / 3 lidas — nada descartado.
+
+**7 das 9 skills dela já podem disparar a cura** (têm cláusula de Bleed):
+`Aceite Minha Oferenda.` · `Ajoelhe-se.` · `Eu Posso Ser Útil.` · `Mordida` ·
+`Não Ouse Me Negar.` · `Por Favor... Só um Pouco.` ·
+`Você Não Merece Esse Sangue.`
+
+As 2 que não (`Por Favor... Não me Machuque Muito.` e `desviar`) são evasivas
+e não aplicam Bleed — como esperado.
+
+**Compartilhado no banco real:** `bloodfeast_consumed` da Rose = 320, e o
+compartilhado = **320** (ela é a única da Arcana com consumo registrado).
+
+Backup: `backups/clash_rpg-antes-family-20261001-233738.sqlite3`.
+
+⚠️ **`gift_class` do Family's está vazio** (`classe=-`). Os outros dois que o
+autor classificou são HE (Reminiscence) e WAW (Livro). Falta decidir o
+deste.
+
 **Contagem recalculada:** o `test_gifts.py` mede agora **16/21** exigências
 (era 13/24) com **5 bloqueadas** (era 11). As 6 que saíram foram as de Envy e
 Protection, que o autor tirou de escopo.
