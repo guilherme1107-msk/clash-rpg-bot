@@ -1098,6 +1098,49 @@ restantes" do Reminiscence e a afinidade (fora de escopo).
 
 ---
 
+## ✅ Escudo do Livro ACORDOU + classe ALEPH (2026-10-02, 00:11)
+
+**1. O autor marcou `Pablo Suindara` com `middle`.** O escudo do Livro, que
+dava **0**, agora dá **50** (1 aliado da Middle × 50). A cláusula estava
+correta o tempo todo — só não tinha ninguém com a keyword para contar.
+
+Keywords da Arcana agora:
+
+| ficha | keywords |
+|---|---|
+| Pablo Suindara | `charge`, **`middle`** |
+| Rosemary Véspera | `bleed`, `bloodfeast`, `unique_bloodfeast` |
+| Blade | `poise` |
+| Elizabeth | `burn`, `tremor` |
+| Bernd Klaus | `tremor` |
+| Zote | `bleed` |
+
+**2. Os 3 gifts da Rosemary são `T5 / ALEPH`** (autor: *"todos os ego gifts da
+rose são tier V classe aleph"*). O Tier já estava T5 nos três — a **classe** é
+que estava vazia. Gravado `gift_class='ALEPH'` (a coluna é lida pelo badge do
+Control Center, e `save_ego_gift` sobe para maiúsculo). Backup
+`backups/clash_rpg-antes-aleph-20261002-001106.sqlite3`.
+
+**Os 8 gifts agora:**
+
+| dono | gift | tier | classe | cláusulas |
+|---|---|---|---|---|
+| Rosemary | Imperfect Eye of Precognition | T5 | **ALEPH** | 6 |
+| Rosemary | The Familys Resentment | T5 | **ALEPH** | 3 |
+| Rosemary | Carousel Figurine | T5 | **ALEPH** | 1 |
+| Pablo Suindara | Livro da vingança: Annex | T5 | WAW | 1 |
+| Pablo Suindara | Dreaming Electric Sheep | T5 | *(vazio)* | 0 |
+| Blade | Clear Mirror, Calm Water | T4 | *(vazio)* | 1 |
+| Blade | Reminiscence | T3 | HE | 0 |
+| Zote | Volatile's earring | T5 | *(vazio)* | 1 |
+
+⚠️ **3 gifts ainda sem classe:** Dreaming Electric Sheep, Clear Mirror e
+Volatile's earring. O autor só falou dos da Rose.
+
+**Verificação:** **147 testes OK** · as 5 provas rodam · 3 backups novos hoje.
+
+---
+
 ## ✅ P6 — CONCLUÍDO (2026-10-01, 03:52 → 04:06) — só docs, nenhuma regra mexida
 
 | O que o README dizia | O que é na verdade |
