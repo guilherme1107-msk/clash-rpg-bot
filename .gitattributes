@@ -1,0 +1,62 @@
+# =============================================================================
+# Clash RPG Bot — .gitattributes
+#
+# Motivo (2026-10-01): o `core.autocrlf` estava em `true` na maquina do autor, e
+# o git avisava "LF will be replaced by CRLF" em ~110 arquivos a cada `git add`.
+# Isso e' config da maquina, nao do projeto: duas pessoas com `autocrlf`
+# diferente produzem diffs que nao existem.
+#
+# A regra aqui e o contrato do repositorio:
+#   - no indice (o que o git guarda e o que vai para o GitHub) SEMPRE LF;
+#   - na pasta de trabalho, LF tambem, exceto os arquivos que o Windows
+#     precisa ler com CRLF.
+#
+# O indice ja estava todo em LF antes deste arquivo (verificado com
+# `git ls-files --eol`), entao adicionar isto NAO muda o conteudo versionado --
+# so fixa o comportamento daqui para frente.
+# =============================================================================
+
+# --- O padrao do projeto ---------------------------------------------------
+# `text=auto` = o git detecta binario vs texto sozinho (nao precisa listar
+# os .png/.gif, que continuam intocados). `eol=lf` = LF na pasta de trabalho.
+* text=auto eol=lf
+
+# --- O Windows precisa de CRLF --------------------------------------------
+# Sem isso, um `.bat` com LF pode falhar em `cmd.exe` antigo, e o PowerShell
+# engole o arquivo como uma linha so.
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+*.psm1 text eol=crlf
+
+# --- Binarios: nunca converter --------------------------------------------
+# `text=auto` ja faz isso, mas fixar evita que o git normalize por engano se
+# algum deles for editado no futuro.
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.webp   binary
+*.ico    binary
+*.woff   binary
+*.woff2  binary
+*.ttf    binary
+*.sqlite3 binary
+*.sqlite3-* binary
+
+# --- Linguagens que nao querem conversao nenhuma ----------------------------
+*.md    text eol=lf
+*.json  text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.py    text eol=lf
+*.pyi   text eol=lf
+*.js    text eol=lf
+*.jsx   text eol=lf
+*.ts    text eol=lf
+*.tsx   text eol=lf
+*.css   text eol=lf
+*.html  text eol=lf
+*.cs    text eol=lf
+*.toml  text eol=lf
+*.txt   text eol=lf
