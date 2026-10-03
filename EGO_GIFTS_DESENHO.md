@@ -131,12 +131,33 @@ Assim **nunca mais divergem**. Vale para o editor de skill **e** o de gift.
 - **4 testes novos** em `tests/unit/test_control_center_meta.py` — cobrem o
   endpoint **e** a ligação do HTML. **123 testes no total.**
 
-#### ⏳ Mesma derivação, ainda pendente
+#### ⏳ O que este item dizia, medido de verdade (2026-10-02)
 
-O editor da **Activity** (`ui/discord-activity/src/components/sheet/SkillsTab.jsx:7`)
-tem a **4ª cópia** dessas listas: 23 de 24 — falta `consume_devotion_repressed`.
-Fica em outro servidor (`activity_server.py`), não no Control Center →
-**fora da Etapa 0**, registrado para não sumir.
+Este trecho dizia *"a Activity tem a 4ª cópia: 23 de 24 — falta
+`consume_devotion_repressed`"*. **Estava errado em duas coisas:**
+
+1. **Não é 23 de 24 — eram 8 faltando.** Medido contra `EFFECT_TYPES`, a
+   `SkillsTab.jsx` não tinha `bloodfeast`, `consume_bloodfeast`,
+   `unique_bloodfeast`, `unique_bleed`, `glimpse_of_precognition`,
+   `heal_from_damage`, `shield` e `consume_devotion_repressed` — e
+   `conditionTypes` não tinha `special_condition_consumed`,
+   `bloodfeast`, `bloodfeast_consumed`, `shared_bloodfeast_consumed`,
+   `bloodfiend_or_bloodbag` nem `allies_with_keyword`. Os 6 primeiros de
+   `conditionTypes` **entram agora** (o `special_condition_consumed` sozinho
+   travava a edição da maioria das skills da Rosemary).
+2. **`consume_devotion_repressed` não está faltando — está escondida de
+   propósito.** O `activity_server.py` filtra o tipo nas duas rotas de
+   envio (linhas 224 e 242) antes de mandar para a Activity, e o rótulo do
+   bot é *"Atualizar recurso privado"*. É recurso privado do mestre: o
+   jogador não deve criar nem ver a cláusula. Por isso **ficou de fora**
+   daqui — meter no dropdown faria o jogador criar uma que a leitura
+   apaga no reload.
+
+`heal_from_damage` e `shield` também ficaram de fora do dropdown da
+Activity: são lidos **só** de `ego_gifts` (`apply_gift_bleed_heal` e
+`gift_shield` passam por `triggered_gift_effects`), então numa skill
+eles não fariam nada. O `shield` agora **nem passa** pela validação da
+skill (`parse_skill_payload` recusa com mensagem explicando).
 
 ---
 
@@ -395,18 +416,21 @@ eu me lembro, mas nem todos estão na mesma pessoa."*
 cerimônia). O `uptie_levels` do `rosemary_content.json` já traz
 `uptie_required` por skill e passiva.
 
-**O que falta:** só a regra **Uptie → teto de gifts**. E **os números o autor
-não lembra** → fica configurável:
+**O que falta:** só a regra **Uptie → teto de gifts**. ~~E os números o autor
+não lembra~~ — **preenchida em 2026-10-02**:
 
 ```python
-# vazio = sem teto  →  é exatamente o comportamento de hoje
-EGO_GIFT_MAX_BY_UPTIE = {}   # ex.: {1: 2, 2: 4, 3: 6, 4: 8, 5: 12}
+# autor: "no uptie V o maximo é 10 e no 1 é 8"
+# sobre o meio: "só o Uptie 5 muda"
+EGO_GIFT_MAX_BY_UPTIE = {1: 8, 2: 8, 3: 8, 4: 8, 5: 10}
 ```
 
-- Enquanto estiver vazio, **nada muda** — a "lista livre, sem teto"
-  (decisão 4) continua valendo;
-- preenche quando ele tiver os números;
-- o aviso de limite aparece no Control Center, junto do gift.
+É um **degrau único**, não escada: 8 do Uptie 1 ao 4, 10 só no 5.
+
+- a tabela vazia (comportamento antigo) ainda é suportada — `ego_gift_limit_warning`
+  devolve `None` — e tem teste próprio, para o mecanismo não sumir;
+- o aviso continua **não bloqueante**;
+- o aviso aparece no Control Center, junto do gift.
 
 **Por que não é coluna na ficha:** a regra é **global** (vale para toda
 ficha), não é atributo de uma ficha. Se um dia quiser teto por ficha, aí sim

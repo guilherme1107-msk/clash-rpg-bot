@@ -38,6 +38,10 @@ def parse_skill_payload(payload: object) -> tuple[Skill, str]:
         clean["effect_type"] = str(clean.get("effect_type") or "").strip()
         if not clean["trigger"] or not clean["effect_type"]: raise ValueError(f"Efeito {index}: selecione o gatilho e o tipo do efeito.")
         if clean["trigger"] not in EFFECT_TRIGGERS or clean["effect_type"] not in EFFECT_TYPES: raise ValueError(f"Efeito {index}: gatilho ou tipo não reconhecido.")
+        # Falha fechada: o escudo é lido **só** de `ego_gifts` (por
+        # `gift_shield`, que soma no número solto do Clash). Numa skill ele
+        # não faria nada — e o mestre só descobriria no meio do combate.
+        if clean["effect_type"] == "shield": raise ValueError(f"Efeito {index}: Escudo é de E.G.O Gift — numa skill ele não faria nada, porque só os gifts entram no `gift_shield`.")
         if clean["trigger"] == "on_evade" and skill_type != "evade": raise ValueError(f"Efeito {index}: Ao Esquivar só pode ser usado em uma skill Evasiva.")
         try:
             clean["value"] = float(clean.get("value", 0) or 0)

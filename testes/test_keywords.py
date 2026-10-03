@@ -174,13 +174,44 @@ class KeywordTests(unittest.TestCase):
         self.assertEqual(sorted(self._names(100)), ["Escopo Ruim", "Sensível"])
 
     # ---------------------------------------------------- teto por Uptie
-    def test_empty_uptie_table_means_no_limit_at_all(self):
-        self.assertEqual(EGO_GIFT_MAX_BY_UPTIE, {})
-        for _ in range(4):
-            self._gift(100, "Empilhado")
-        self.assertIsNone(
-            self.db.ego_gift_limit_warning(1, "player", 100, 4),
+    def test_uptie_table_is_the_agreed_step(self):
+        """Os números do autor: 8 no Uptie 1–4, 10 só no 5 (degrau único)."""
+        self.assertEqual(
+            EGO_GIFT_MAX_BY_UPTIE, {1: 8, 2: 8, 3: 8, 4: 8, 5: 10},
         )
+
+        # Uptie 1 é o padrão de quem nunca mexeu no perfil: cabe 8.
+        self.assertIsNone(self.db.ego_gift_limit_warning(1, "player", 100, 8))
+        warning = self.db.ego_gift_limit_warning(1, "player", 100, 9)
+        self.assertIn("Uptie 1", warning)
+        self.assertIn("8", warning)
+
+        # Uptie 5 é o único degrau: 10.
+        with self.db.lock, self.db.connection:
+            self.db.connection.execute(
+                "INSERT OR REPLACE INTO character_profiles (guild_id, user_id, profile_json)"
+                " VALUES (?,?,?)",
+                (1, 100, json.dumps({"uptie": 5})),
+            )
+        self.assertEqual(self.db.character_uptie(1, 100), 5)
+        self.assertIsNone(self.db.ego_gift_limit_warning(1, "player", 100, 10))
+        self.assertIn("10", self.db.ego_gift_limit_warning(1, "player", 100, 11))
+
+    def test_empty_uptie_table_means_no_limit_at_all(self):
+        # O mecanismo de "tabela vazia = sem teto" tem de continuar valendo
+        # mesmo com a tabela real preenchida — esvazia só durante o teste.
+        import database
+        original = dict(database.EGO_GIFT_MAX_BY_UPTIE)
+        try:
+            database.EGO_GIFT_MAX_BY_UPTIE.clear()
+            for _ in range(4):
+                self._gift(100, "Empilhado")
+            self.assertIsNone(
+                self.db.ego_gift_limit_warning(1, "player", 100, 4),
+            )
+        finally:
+            database.EGO_GIFT_MAX_BY_UPTIE.clear()
+            database.EGO_GIFT_MAX_BY_UPTIE.update(original)
 
     def test_filled_uptie_table_warns_without_blocking(self):
         import database
@@ -212,10 +243,13 @@ class KeywordTests(unittest.TestCase):
             (row["active_status"], row["active_tag"], row["active_scope"], row["active_min"]),
             ("middle", "middle", "allies", 3),
         )
-        # vazio no payload volta ao padrão de "sempre vale"
+        # vazio no payload volta ao padrão de "sempre vale" — mas tem de vir
+        # **escrito**: uma chave ausente não mexe na coluna (é o que protege
+        # o Control Center, que não tem editor de gate nem de cláusulas)
         self.db.save_ego_gift(1, "player", 100, {
             "id": result["id"], "name": "Gateado", "tier": 5, "description": "",
-            "effects": [], "active_scope": "qualquer-coisa",
+            "effects": [], "active_status": "", "active_tag": "",
+            "active_scope": "qualquer-coisa", "active_min": 0,
         })
         row = self.db.connection.execute(
             "SELECT active_status, active_tag, active_scope, active_min FROM ego_gifts WHERE id=?",
@@ -225,6 +259,55 @@ class KeywordTests(unittest.TestCase):
             (row["active_status"], row["active_tag"], row["active_scope"], row["active_min"]),
             ("", "", "self", 0),
         )
+
+
+    def test_payload_without_effects_never_erases_the_clauses(self):
+        """O Control Center salva gift **sem** a chave `effects`.
+
+        Ele não tem editor de cláusulas de gift (item 3, pendente), então manda
+        só nome/tier/classe/mods. Isso não pode apagar o que já está gravado —
+        era exatamente o que acontecia antes (2026-10-02: 1 cláusula → 0).
+        """
+        criado = self._gift(100, "Com Cláusula")
+
+        def clausulas():
+            row = self.db.connection.execute(
+                "SELECT effects_json FROM ego_gifts WHERE id=?", (criado["id"],),
+            ).fetchone()
+            return len(json.loads(row["effects_json"]))
+
+        self.assertEqual(clausulas(), 1)
+
+        # payload idêntico ao que o `saveEgoGiftItem` do HTML monta
+        self.db.save_ego_gift(1, "player", 100, {
+            "id": criado["id"], "name": "Com Cláusula", "tier": 5,
+            "description": "", "gift_class": "WAW", "base_power_mod": 0,
+            "crit_damage_mod": 70,
+        })
+        self.assertEqual(clausulas(), 1, "o 'Salvar' da Central apagou as cláusulas!")
+
+        # o mesmo vale para o gate (Bloco 7): 3 gifts reais dependem dele
+        self.db.save_ego_gift(1, "player", 100, {
+            "id": criado["id"], "name": "Com Cláusula", "tier": 5,
+            "description": "", "active_tag": "middle",
+            "active_scope": "allies", "active_min": 3,
+        })
+        row = self.db.connection.execute(
+            "SELECT active_status, active_tag, active_scope, active_min"
+            " FROM ego_gifts WHERE id=?", (criado["id"],),
+        ).fetchone()
+        self.assertEqual(
+            (row["active_status"], row["active_tag"], row["active_scope"], row["active_min"]),
+            ("", "middle", "allies", 3),
+            "o payload sem `active_status` limpou o gate!",
+        )
+
+        # presença da chave manda: `[]` limpa de propósito
+        self.db.save_ego_gift(1, "player", 100, {
+            "id": criado["id"], "name": "Com Cláusula", "tier": 5,
+            "description": "", "effects": [],
+        })
+        self.assertEqual(clausulas(), 0)
 
 
 if __name__ == "__main__":

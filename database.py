@@ -42,10 +42,16 @@ def _effects_json(skill: Skill) -> str:
 # Se aparecer mais, vira dado em tabela (não código).
 KEYWORD_ALIASES = {"false_hunger": "unique_bloodfeast"}
 
-# §7.7 — teto de gifts por Uptie (decisão 9 do autor). VAZIO de propósito: ele
-# lembra que Uptie 5 dá "10–12", mas não os dos níveis 1 a 4. Enquanto estiver
-# vazio, **nada muda** — a lista livre de hoje continua valendo.
-EGO_GIFT_MAX_BY_UPTIE: dict[int, int] = {}   # ex.: {1: 2, 2: 4, 3: 6, 4: 8, 5: 12}
+# §7.7 — teto de gifts por Uptie (decisão 9 do autor).
+#
+# Preenchida em 2026-10-02 com os números dele: *"no uptie V o maximo é 10 e
+# no 1 é 8"*, e sobre o meio **"só o Uptie 5 muda"**. Ou seja, é um **degrau
+# único**: 8 do Uptie 1 ao 4, 10 no 5 — não é escada linear.
+#
+# Antes estava vazia de propósito (ele não lembrava os números). Com a tabela
+# vazia a lista livre continuava valendo; agora o teto vale, e o aviso
+# continua **não bloqueante** (`ego_gift_limit_warning`).
+EGO_GIFT_MAX_BY_UPTIE: dict[int, int] = {1: 8, 2: 8, 3: 8, 4: 8, 5: 10}
 
 
 def normalize_keywords(raw) -> frozenset[str]:
@@ -2674,7 +2680,17 @@ class Database:
         clpm = int(payload.get("clash_power_mod", 0))
         olm = int(payload.get("offense_level_mod", 0))
         dlm = int(payload.get("defense_level_mod", 0))
-        effects_json = json.dumps(payload.get("effects", []))
+        # `effects` só é gravado quando o chamador manda a chave.
+        #
+        # O Control Center **não tem editor de cláusulas de gift** (item 3 do
+        # autor, ainda pendente) e manda o payload com nome/tier/classe/mods,
+        # mas sem `effects`. Com `payload.get("effects", [])` isso virava `[]`
+        # e o próprio "Salvar" da Central apagava TODAS as cláusulas do gift
+        # (checado em 2026-10-02: 1 cláusula → 0).
+        #
+        # Regra: **ausente = não mexe**; presente (mesmo `[]`) = manda.
+        tem_effects = "effects" in payload
+        effects_json = json.dumps(payload["effects"]) if tem_effects else None
         # Bloco 7 — "o gift só vale quando…". Vazio/`self` = sempre vale.
         active_status = str(payload.get("active_status", "") or "").strip().casefold()
         active_tag = str(payload.get("active_tag", "") or "").strip().casefold()
@@ -2686,22 +2702,47 @@ class Database:
         crit_damage_mod = int(payload.get("crit_damage_mod", 0) or 0)
         with self.lock, self.connection:
             if gift_id:
-                self.connection.execute(
-                    """UPDATE ego_gifts SET name=?, tier=?, description=?, base_power_mod=?, coin_power_mod=?,
-                       clash_power_mod=?, offense_level_mod=?, defense_level_mod=?, effects_json=?,
-                       active_status=?, active_tag=?, active_scope=?, active_min=?, gift_class=?,
-                       crit_damage_mod=?
-                       WHERE id=? AND guild_id=? AND owner_kind=? AND owner_id=?""",
-                    (name, tier, desc, bpm, cpm, clpm, olm, dlm, effects_json,
-                     active_status, active_tag, active_scope, active_min, gift_class,
-                     crit_damage_mod, gift_id, guild_id, owner_kind, owner_id),
-                )
+                # O Control Center manda um payload **parcial**: sem `effects`,
+                # sem o gate do Bloco 7 e, num cliente ainda não recarregado,
+                # sem `crit_damage_mod`. Um `payload.get(coluna, padrão)` para
+                # cada uma apagava o que já estava gravado a cada "Salvar"
+                # (checado em 2026-10-02: 1 cláusula → 0, e o gate de 3 gifts).
+                #
+                # Regra: **ausente = não mexe; presente = manda (mesmo vazio)**.
+                # Os nomes de coluna vêm de uma lista literal, nunca do
+                # payload, então não há SQL dinâmico vindo de fora.
+                pares = [
+                    ("name", name, "name"),
+                    ("tier", tier, "tier"),
+                    ("description", desc, "description"),
+                    ("base_power_mod", bpm, "base_power_mod"),
+                    ("coin_power_mod", cpm, "coin_power_mod"),
+                    ("clash_power_mod", clpm, "clash_power_mod"),
+                    ("offense_level_mod", olm, "offense_level_mod"),
+                    ("defense_level_mod", dlm, "defense_level_mod"),
+                    ("gift_class", gift_class, "gift_class"),
+                    ("crit_damage_mod", crit_damage_mod, "crit_damage_mod"),
+                    ("effects_json", effects_json, "effects"),
+                    ("active_status", active_status, "active_status"),
+                    ("active_tag", active_tag, "active_tag"),
+                    ("active_scope", active_scope, "active_scope"),
+                    ("active_min", active_min, "active_min"),
+                ]
+                atualizado = [(col, val) for col, val, chave in pares if chave in payload]
+                if atualizado:
+                    sets = ", ".join(f"{col}=?" for col, _ in atualizado)
+                    self.connection.execute(
+                        f"UPDATE ego_gifts SET {sets} "
+                        "WHERE id=? AND guild_id=? AND owner_kind=? AND owner_id=?",
+                        (*[val for _, val in atualizado],
+                         gift_id, guild_id, owner_kind, owner_id),
+                    )
             else:
                 cursor = self.connection.execute(
                     """INSERT INTO ego_gifts (guild_id, owner_kind, owner_id, name, tier, description,
-                       base_power_mod, coin_power_mod, clash_power_mod, offense_level_mod, defense_level_mod, effects_json,
-                       active_status, active_tag, active_scope, active_min, gift_class, crit_damage_mod)
-                       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                       base_power_mod, coin_power_mod, clash_power_mod, offense_level_mod, defense_level_mod,
+                       effects_json, active_status, active_tag, active_scope, active_min, gift_class, crit_damage_mod)
+                       VALUES (?,?,?,?,?,?,?,?,?,?,?,COALESCE(?, '[]'),?,?,?,?,?,?)""",
                     (guild_id, owner_kind, owner_id, name, tier, desc, bpm, cpm, clpm, olm, dlm, effects_json,
                      active_status, active_tag, active_scope, active_min, gift_class, crit_damage_mod),
                 )

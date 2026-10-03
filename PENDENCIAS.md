@@ -1166,17 +1166,87 @@ invenção dele, sem classe de Identity). **12 cláusulas** gravadas no total:
 (Reminiscence) e afinidade (fora de escopo, decisão 2).
 
 **Pendências pequenas que sobraram:**
-- `EGO_GIFT_MAX_BY_UPTIE` continua vazia — falta os números do Uptie.
-- `gift_class`/`crit_damage_mod`/duration/limite no formulário do editor de
-  gifts do Control Center (só no backend e no badge).
-- UI dos gifts na Activity (falta `consume_devotion_repressed` na 4ª cópia das
-  listas) + P8 (embeds).
+- ~~`EGO_GIFT_MAX_BY_UPTIE` vazia~~ → **preenchida** `{1:8, 2:8, 3:8, 4:8, 5:10}`.
+- ~~`crit_damage_mod` no formulário do editor de gifts~~ → **nos 4
+  formulários e nos 4 payloads**. `gift_class` já estava. Duration/limite
+  agora **sobrevivem** ao salvar (via `dataset.original`), mas ainda não
+  têm input — dá pra mexer pelo payload.
+- ~~UI dos gifts na Activity (falta `consume_devotion_repressed`)~~ →
+  **não falta, está escondida de propósito** (recurso privado, filtrado no
+  `activity_server.py`). O que faltava mesmo eram 6 tipos e 6 condições —
+  **entram agora**. Editor de cláusulas de gift na Activity continua sendo
+  o item 3 do autor.
+- **P8 (embeds dos gifts)** continua pendente.
 - 7 arquivos com EOL misturado, esperando a outra sessão largar `combat.py` e
   `testes/test_database.py`.
 - Vulnerabilidades: `discord.py`, e `react`/`vite` com `"latest"`.
 
 **Git:** branch `feature/refactor-architecture`, 7 commits, tudo no ar.
 `main` do remoto intocado.
+
+---
+
+## 🐛 O "Salvar" da Central apagava os gifts (2026-10-03, 04:4x) — CORRIGIDO
+
+Bug encontrado quando o autor pediu *"arrume tudo possível sobre os ego
+gifts"*, e ele era **silencioso e destrutivo**.
+
+**O caminho:** o `saveEgoGiftItem`/`addEgoGiftItem` do `control_center.html`
+monta o payload com nome/tier/classe/mods — **sem a chave `effects`** (a
+Central não tem editor de cláusulas de gift; é o item 3, que o autor faz
+outro dia). O `db.save_ego_gift` fazia `json.dumps(payload.get("effects",
+[]))`, ou seja `[]`, e escrevia no `UPDATE`.
+
+**Resultado medido:** um gift com **1 cláusula** ficava com **0** depois de
+clicar em "Salvar". No banco real eram **13 cláusulas** e **3 gates** em
+risco.
+
+**O mesmo `payload.get(..., default)` existia no gate do Bloco 7**
+(`active_status`, `active_tag`, `active_scope`, `active_min`) — que
+Carousel (`la_manchaland`), Livro (`middle`/`allies`/3) e Reminiscence
+(`poise`/`allies`/3) dependem para valer.
+
+**A regra nova, uniforme:** ***ausente = não mexe; presente = manda (mesmo
+vazio)***. O `UPDATE` agora só escreve as colunas cuja chave veio no
+payload, a partir de uma **lista literal** — os nomes de coluna nunca vêm
+de fora, então não há SQL dinâmico vindo do usuário.
+
+Duas decisões dentro disso:
+
+- **`INSERT` continua com os defaults** (gift novo não tem gate nem
+  cláusulas), via `COALESCE(?, '[]')` para o `effects_json`.
+- **Para limpar, tem de mandar a chave.** O teste
+  `test_save_returns_the_warning_and_persists_the_gate` passou a enviar
+  `"active_status": "", "active_tag": "", "active_min": 0` explicitamente —
+  a asserção (`("", "", "self", 0)`) **não mudou**, só ficou explícito o
+  que antes era implícito.
+
+**Provas:**
+- `test_payload_without_effects_never_erases_the_clauses`
+  (novo, em `test_keywords.py`) — cláusula, gate, e o `[]` explícito
+  limpando de propósito.
+- **No banco real**, com backup antes
+  (`backups/clash_rpg-antes-prova-cc-20261003-044815.sqlite3`): payload do
+  Control Center aplicado nos **8 gifts** → `13 → 13` cláusulas e os 3
+  gates idênticos.
+
+**Contagem corrigida:** são **13 cláusulas**, não 12 — a tabela da seção
+acima tinha contado errado.
+
+### Outros 3 achados do mesmo levantamento
+
+| Achado | O que era |
+|---|---|
+| **`EGO_GIFT_MAX_BY_UPTIE`** | Preenchida: `{1:8, 2:8, 3:8, 4:8, 5:10}` — **degrau único**, o autor: *"só o Uptie 5 muda"*. Teste novo + o teste antigo de "tabela vazia" agora esvazia a tabela só durante ele, para o mecanismo não sumir. |
+| **`effect_owner` não existia no editor da Central** | O card só tinha 13 campos, e `effectData()` serializava **só esses 13**. `effect_owner`, `condition_operator`, `max_per_round`, `condition_turn`, `duration_turns`, `max_activations`, `activation_window` **nunca eram enviados** — ou seja, salvava e viravam `auto`/`0`/`None`. Agora: `addEffect` guarda a cláusula original em `dataset.original` e `effectOf()` **mescla** original + formulário; **duplicar efeitos** também passou a usar `effectOf` (antes usava `rowValues`, que perdia tudo). E `effect_owner` ganhou select ("Quem recebe"). |
+| **`condition_keyword` não tinha campo** | Sem input, o `allies_with_keyword` do escudo do Livro **não dava pra montar** — e um payload sem ele fazia `SkillEffect` levantar `ValueError`, que o `_effects_from_row` descarta **em silêncio**: salvar o Livro pela Central apagaria o escudo. Ganhou input (só aparece quando a condição é `allies_with_keyword`), mais a validação no `skillValidationIssues`. |
+
+E o `crit_damage_mod` (o `+70` do Clear Mirror) entrou nos **4
+formulários** de gift da Central e nos **4 payloads** — antes só existia no
+banco, sem jeito de editar.
+
+**149 testes OK** (eram 147) · HTML checado com `vm.Script` · 8 provas
+`verify_*` rodam.
 
 ---
 
