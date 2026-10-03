@@ -1668,15 +1668,40 @@ runner = ...; execute_unopposed_job(runner, request_data)   # ❌ caminho pobre
 > **Sob carga, o mesmo comando dá resultado diferente.** Às vezes roda pelo bot
 > (efeitos, Bleed, Charge, críticos), às vezes roda na Activity (nada disso).
 
-### 3. `prediction_with_paralysis` vs `clash_execution` — mesmo problema
+### 3. `prediction_with_paralysis` — a regra de Paralisia é um chute
 
-| | `bot.py:1393` | `clash_execution.py:38` |
+| | antes | hoje (2026-10-03) |
 |---|---|---|
-| Simulações | **5** | **50** |
-| Regra de Paralisia | hardcode `0%` / `100%` | não tem |
+| Simulações | bot **5** / Activity **50** | **50** num lugar só |
+| Regra de Paralisia | só o bot tinha | **as duas rotas** têm |
 
-**Ação:** definir **uma** implementação canônica e eliminar a duplicata. A Activity não deveria
-resolver combate sozinha — ou, se resolver, deve chamar **exatamente** a mesma função.
+A duplicação **já foi resolvida**: `clash_execution.py:85` chama
+`prediction_with_paralysis` (`src/domain/combat/engine.py:78`), que virou a
+implementação canônica e alimenta o embed do bot (`bot.py:6653`, `bot.py:6948`)
+e o da Activity.
+
+**O que continua errado** é o corpo da função (`engine.py:88-91`):
+
+```python
+if left_modifiers.paralysis > 0 and right_modifiers.paralysis == 0:
+    return Forecast(0.0, "HOPELESS", "Sem esperança — Paralisia detectada")
+if right_modifiers.paralysis > 0 and left_modifiers.paralysis == 0:
+    return Forecast(1.0, "DOMINATING", "Dominante — alvo com Paralisia")
+```
+
+Paralisia **não decide** o clash — ela tira poder de moeda. Com `paralysis=1`
+numa ficha que tem `Faixa 14–32` contra `Faixa 11–19`, o atalho devolve **0%
+HOPELESS** e a simulação real devolve **100% DOMINATING** (medido com
+`estimate_clash`, 20k rodadas, mesma seed). O embed promete o **inverso** do
+que acontece.
+
+**Medido na simulação do Encounter** (`testes/sim_encounter.py`,
+2026-10-03): a Arcana vence o Cavaleiro com **28 de dano**, e o primeiro
+embed que o Discord recebe é `⌁ HOPELESS  0%  Sem esperança — Paralisia
+detectada`.
+
+**Ação:** decidir com o autor o que a Paralisia deve significar na previsão —
+hoje ela é um atalho binário no lugar de uma simulação.
 
 ---
 
