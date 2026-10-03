@@ -38,6 +38,14 @@ from src.domain.combat import Modifiers, Skill, resolve_damage  # noqa: E402
 
 db = bot.db
 db.setup()
+
+# Os gifts REAIS da cópia disparam junto (o The Family's dá +6 de Offense
+# por rodada a todo o time), o que jogava a conferência lá embaixo fora:
+# o Blade não ficava com 10 e a Rosemary não ficava com 0. Deixa os outros
+# inertes e mantém só o Clear Mirror (id 6), que é o que este teste prova.
+db.connection.execute("UPDATE ego_gifts SET effects_json='[]' WHERE id<>6")
+db.connection.execute("DELETE FROM ego_gift_state")
+db.connection.commit()
 SKILL = Skill("Golpe", 4, 2, 4, "", "attack", 0, (), ("normal", "normal", "normal", "normal"))
 ENEMY = 10
 
@@ -146,4 +154,8 @@ esperado = [
 ]
 for texto, ok in esperado:
     print(f"  [{'ok' if ok else 'FALHOU'}] {texto}")
-print("\n  RESULTADO:", "TUDO OK" if all(ok for _, ok in esperado) else "*** DIVERGIU ***")
+resultado = all(ok for _, ok in esperado)
+print("\n  RESULTADO:", "TUDO OK" if resultado else "*** DIVERGIU ***")
+# Sem isto o script imprimia "*** DIVERGIU ***" e saía com exit=0, e toda
+# checagem que só olhava o código de saída passava batido.
+sys.exit(0 if resultado else 1)

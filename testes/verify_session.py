@@ -34,6 +34,15 @@ import bot  # noqa: E402
 db = bot.db
 db.setup()
 
+# Os gifts REAIS continuam na cópia e disparam junto — o The Family's dá
+# +6 de Offense por rodada para todo o time, e o Carousel também entra.
+# Isso muda os números que a CONFERENCIA lá embaixo espera e faz o teste
+# "divergir" sem ser o motor. Deixa os outros inertes: este script prova o
+# Carousel (id 2) sozinho, e é ele que a linha logo abaixo sobrescreve.
+db.connection.execute("UPDATE ego_gifts SET effects_json='[]' WHERE id<>2")
+db.connection.execute("DELETE FROM ego_gift_state")
+db.connection.commit()
+
 # ── as cláusulas que as prints pedem ────────────────────────────────────
 db.save_ego_gift(GUILD, "player", ROSEMARY, {
     "id": 2,  # Carousel Figurine
@@ -114,4 +123,8 @@ esperado = [
 ]
 for texto, ok in esperado:
     print(f"  [{'ok' if ok else 'FALHOU'}] {texto}")
-print("\n  RESULTADO:", "TUDO OK" if all(ok for _, ok in esperado) else "*** DIVERGIU ***")
+resultado = all(ok for _, ok in esperado)
+print("\n  RESULTADO:", "TUDO OK" if resultado else "*** DIVERGIU ***")
+# Sem isto o script imprimia "*** DIVERGIU ***" e saía com exit=0, e toda
+# checagem que só olhava o código de saída passava batido.
+sys.exit(0 if resultado else 1)

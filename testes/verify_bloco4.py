@@ -35,6 +35,14 @@ import bot  # noqa: E402
 
 db = bot.db
 db.setup()
+
+# Os gifts REAIS da cópia disparam junto com os que este script cria (o
+# The Family's dá +6 de Offense por rodada a todo o time), o que jogava
+# todas as contas da CONFERENCIA lá embaixo fora. Deixa todos inertes:
+# o `gift()` logo abaixo cria os seus, e estes não entram mais.
+db.connection.execute("UPDATE ego_gifts SET effects_json='[]'")
+db.connection.execute("DELETE FROM ego_gift_state")
+db.connection.commit()
 ROSTER = (("Rosemary", ROSEMARY), ("Blade", BLADE), ("Zero", ZERO))
 
 
@@ -137,4 +145,8 @@ esperado = [
 ]
 for texto, ok in esperado:
     print(f"  [{'ok' if ok else 'FALHOU'}] {texto}")
-print("\n  RESULTADO:", "TUDO OK" if all(ok for _, ok in esperado) else "*** DIVERGIU ***")
+resultado = all(ok for _, ok in esperado)
+print("\n  RESULTADO:", "TUDO OK" if resultado else "*** DIVERGIU ***")
+# Sem isto o script imprimia "*** DIVERGIU ***" e saía com exit=0, e toda
+# checagem que só olhava o código de saída passava batido.
+sys.exit(0 if resultado else 1)
