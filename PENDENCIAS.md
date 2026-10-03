@@ -1668,9 +1668,9 @@ runner = ...; execute_unopposed_job(runner, request_data)   # ❌ caminho pobre
 > **Sob carga, o mesmo comando dá resultado diferente.** Às vezes roda pelo bot
 > (efeitos, Bleed, Charge, críticos), às vezes roda na Activity (nada disso).
 
-### 3. `prediction_with_paralysis` — a regra de Paralisia é um chute
+### 3. ✅ `prediction_with_paralysis` — **decisão do autor (2026-10-03)**
 
-| | antes | hoje (2026-10-03) |
+| | antes | hoje |
 |---|---|---|
 | Simulações | bot **5** / Activity **50** | **50** num lugar só |
 | Regra de Paralisia | só o bot tinha | **as duas rotas** têm |
@@ -1680,7 +1680,10 @@ A duplicação **já foi resolvida**: `clash_execution.py:85` chama
 implementação canônica e alimenta o embed do bot (`bot.py:6653`, `bot.py:6948`)
 e o da Activity.
 
-**O que continua errado** é o corpo da função (`engine.py:88-91`):
+**A regra de Paralisia fica como está, de propósito** — decisão do autor:
+
+> *"na previsão, se o lado esquerdo tiver paralisia é **hopeless** e se o
+> direito tiver **dominating**, sem rodar as previsões, só deixe assim."*
 
 ```python
 if left_modifiers.paralysis > 0 and right_modifiers.paralysis == 0:
@@ -1689,19 +1692,11 @@ if right_modifiers.paralysis > 0 and left_modifiers.paralysis == 0:
     return Forecast(1.0, "DOMINATING", "Dominante — alvo com Paralisia")
 ```
 
-Paralisia **não decide** o clash — ela tira poder de moeda. Com `paralysis=1`
-numa ficha que tem `Faixa 14–32` contra `Faixa 11–19`, o atalho devolve **0%
-HOPELESS** e a simulação real devolve **100% DOMINATING** (medido com
-`estimate_clash`, 20k rodadas, mesma seed). O embed promete o **inverso** do
-que acontece.
-
-**Medido na simulação do Encounter** (`testes/sim_encounter.py`,
-2026-10-03): a Arcana vence o Cavaleiro com **28 de dano**, e o primeiro
-embed que o Discord recebe é `⌁ HOPELESS  0%  Sem esperança — Paralisia
-detectada`.
-
-**Ação:** decidir com o autor o que a Paralisia deve significar na previsão —
-hoje ela é um atalho binário no lugar de uma simulação.
+O atalho é **intencional e binário**: ele nem chama `estimate_clash`, e a
+divergência com a simulação não é defeito. Medido em
+`testes/sim_encounter.py` (2026-10-03): com `paralysis=1` numa ficha de
+`Faixa 14–32` contra `Faixa 11–19`, a previsão diz **0% HOPELESS** e o
+clash real dá **vitória da Arcana com 28 de dano** — é assim que deve ser.
 
 ---
 

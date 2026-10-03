@@ -146,7 +146,7 @@ def semear() -> dict:
     ))
 
     # um E.G.O Gift com cláusula de verdade (o escudo do Livro é o mesmo formato)
-    db.save_ego_gift(GUILD, "character", ME, {
+    db.save_ego_gift(GUILD, "player", ME, {
         "name": "Imperfect Eye of Precognition", "tier": 5, "gift_class": "ALEPH",
         "description": "Cláusula de exemplo para a simulação.",
         "base_power_mod": 2, "clash_power_mod": 3, "crit_damage_mod": 10,
