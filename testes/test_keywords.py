@@ -311,6 +311,33 @@ class KeywordTests(unittest.TestCase):
         })
         self.assertEqual(clausulas(), 0)
 
+    def test_hp_na_row_testa_coluna_nao_valor(self):
+        """`sqlite3.Row` — o `in` olha os **valores**, não as colunas.
+
+        `clash_execution.py` decidia se gravava HP com `elif "hp" in
+        loser_row:`. Em Python 3.13 isso dá **sempre False**: a linha
+        `SELECT 1 AS hp` tem os valores `1` e não a string `"hp"`. O
+        UPDATE nunca teria rodado se `enemies` ganhasse a coluna. O
+        caminho certo é `.keys()`, que também existe em dict — por isso a
+        troca não muda o tipo de linha que o ramo aceita.
+        """
+        import sqlite3
+
+        con = sqlite3.connect(":memory:")
+        con.row_factory = sqlite3.Row
+        com_hp = con.execute("SELECT 1 AS hp, 2 AS sp").fetchone()
+        sem_hp = con.execute("SELECT 1 AS a, 2 AS sp").fetchone()
+
+        # o teste errado: negativo nos dois casos, inclusive no que TEM hp
+        self.assertNotIn("hp", com_hp, "o `in` em sqlite3.Row é por valor")
+        # o teste certo: nome de coluna, nos dois casos
+        self.assertIn("hp", com_hp.keys())
+        self.assertNotIn("hp", sem_hp.keys())
+
+        # `.keys()` também existe em dict, então os dois tipos valem
+        self.assertIn("hp", {"hp": 1}.keys())
+        con.close()
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
