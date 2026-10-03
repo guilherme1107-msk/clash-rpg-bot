@@ -285,5 +285,38 @@ class EstadoDosGifts(unittest.TestCase):
             f"so {self.resumo[0]}/{self.resumo[1]} — o motor le menos do que antes")
 
 
+    def test_07_tudo_que_esta_gravado_passa_na_validacao_do_salvamento(self):
+        """O Control Center agora TEM editor de cláusulas de gift.
+
+        Ele manda `effects` para o banco. Se a validação fosse mais estrita
+        que o motor, o mestre não conseguiria salvar nada do que já existe —
+        por isso os dois lados têm que enxergar igual. O inverso (cláusula
+        inválida aceita aqui) é o test_03: quem descarta é o `_effects_from_row`,
+        lá no meio do combate, em silêncio.
+        """
+        import control_center as cc  # importa tarde: o módulo abre servidor
+
+        for nome, gift in self.gifts.items():
+            bruto = json.loads(gift["effects_json"] or "[]")
+            try:
+                cc._validate_gift_effects(bruto)
+            except ValueError as exc:  # pragma: no cover - só em regressão
+                self.fail(f"{nome}: a Central recusaria o que já está gravado: {exc}")
+
+        casos = [
+            ([{"trigger": "on_hit", "effect_type": "isso_nao_existe", "value": 1}],
+             "Tipo de efeito inválido"),
+            ([{"trigger": "on_hit", "effect_type": "base_power", "value": 1,
+               "duration_turns": "duas"}], "precisa ser um número"),
+            ([{"trigger": "on_hit", "effect_type": "base_power", "value": 1,
+               "activation_window": "sempre"}], "só aceita"),
+            (["nao-e-objeto"], "precisa de ser um objeto"),
+        ]
+        for effects, trecho in casos:
+            with self.assertRaises(ValueError) as ctx:
+                cc._validate_gift_effects(effects)
+            self.assertIn(trecho, str(ctx.exception))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

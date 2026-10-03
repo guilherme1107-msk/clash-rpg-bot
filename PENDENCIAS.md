@@ -1168,14 +1168,16 @@ invenção dele, sem classe de Identity). **12 cláusulas** gravadas no total:
 **Pendências pequenas que sobraram:**
 - ~~`EGO_GIFT_MAX_BY_UPTIE` vazia~~ → **preenchida** `{1:8, 2:8, 3:8, 4:8, 5:10}`.
 - ~~`crit_damage_mod` no formulário do editor de gifts~~ → **nos 4
-  formulários e nos 4 payloads**. `gift_class` já estava. Duration/limite
-  agora **sobrevivem** ao salvar (via `dataset.original`), mas ainda não
-  têm input — dá pra mexer pelo payload.
+  formulários e nos 4 payloads**. `gift_class` já estava.
+- ~~Duration/limite sem input~~ → **têm input agora**: "Na rodada N",
+  "x por rodada", "Duração em rodadas", "Ativações máximas" e "Janela"
+  (ver seção do editor de cláusulas abaixo).
 - ~~UI dos gifts na Activity (falta `consume_devotion_repressed`)~~ →
   **não falta, está escondida de propósito** (recurso privado, filtrado no
   `activity_server.py`). O que faltava mesmo eram 6 tipos e 6 condições —
-  **entram agora**. Editor de cláusulas de gift na Activity continua sendo
-  o item 3 do autor.
+  **foram adicionados**.
+- ~~Central sem editor de cláusulas de gift~~ → **tem editor** (seção abaixo).
+  O **editor de gifts na Activity** continua sendo o item 3 do autor.
 - **P8 (embeds dos gifts)** continua pendente.
 - 7 arquivos com EOL misturado, esperando a outra sessão largar `combat.py` e
   `testes/test_database.py`.
@@ -1193,9 +1195,9 @@ gifts"*, e ele era **silencioso e destrutivo**.
 
 **O caminho:** o `saveEgoGiftItem`/`addEgoGiftItem` do `control_center.html`
 monta o payload com nome/tier/classe/mods — **sem a chave `effects`** (a
-Central não tem editor de cláusulas de gift; é o item 3, que o autor faz
-outro dia). O `db.save_ego_gift` fazia `json.dumps(payload.get("effects",
-[]))`, ou seja `[]`, e escrevia no `UPDATE`.
+Central não tinha editor de cláusulas de gift). O `db.save_ego_gift` fazia
+`json.dumps(payload.get("effects", []))`, ou seja `[]`, e escrevia no
+`UPDATE`.
 
 **Resultado medido:** um gift com **1 cláusula** ficava com **0** depois de
 clicar em "Salvar". No banco real eram **13 cláusulas** e **3 gates** em
@@ -1244,6 +1246,62 @@ acima tinha contado errado.
 E o `crit_damage_mod` (o `+70` do Clear Mirror) entrou nos **4
 formulários** de gift da Central e nos **4 payloads** — antes só existia no
 banco, sem jeito de editar.
+
+---
+
+## ✅ Editor de cláusulas de gift na Central (2026-10-03, 05:2x)
+
+Antes disso o editor de efeitos do Control Center era **só de skill**: gift
+nenhum tinha onde editar cláusula — só por script. A seção acima consertou o
+lado destrutivo (apagar); esta conserta o lado útil (**editar**).
+
+**O que entrou:**
+
+- **Contêiner por gift, nos 4 formulários** — card do sheet (editar e novo)
+  e página E.G.O Gifts (editar e novo). Cada um com `giftFxHTML(key, ...)`,
+  botão "+ Adicionar cláusula" e a contagem no cabeçalho.
+- **`addEffect`/`effectDataOf`/`cardsOf` passaram a receber contêiner.**
+  Antes tudo era `document.querySelectorAll('.effect-card')` — com cards de
+  skill **e** de gift na mesma página, os limites de 20, a duplicação, a
+  validação e o preview teriam contado tudo misturado. Agora cada função
+  enxerga só o seu contêiner, e `updateSkillPreview()` só roda quando o card
+  está no `#effects` da skill.
+- **Payload novo:** `effects: giftEffects(key)`. Se o contêiner não existir
+  a função devolve `null` e `JSON.stringify` **dobra a chave** — ou seja, ela
+  nem chega no servidor, e a regra *"ausente = não mexe"* protege o resto.
+
+**Os 5 campos de limite/duração que faltavam:**
+
+| Campo | Vale para | Esconde quando |
+|---|---|---|
+| `condition_turn` ("Na rodada N") | skill e gift | o gatilho não é `session_*` |
+| `max_per_round` ("x por rodada") | skill e gift | — |
+| `duration_turns` ("Duração em rodadas") | **só gift** | o card não está num gift |
+| `max_activations` ("Ativações máximas") | **só gift** | idem |
+| `activation_window` ("Janela": combat/round) | **só gift** | idem |
+
+Os três últimos são lidos **apenas** de `triggered_gift_effects`
+(`bot.py:964` e `bot.py:1669`) — numa skill seriam inerte, igual ao `shield`.
+Por isso o input some em card de skill, e `skill_service.allowed` continua
+sem eles: gift passa reto pelo `save_ego_gift`, skill é filtrada.
+
+**Validação antes de gravar (`control_center._validate_gift_effects`):**
+sem ela a cláusula ruim iria para o banco e o `_effects_from_row`
+**descartaria sozinho, em silêncio** — o mestre salvaria sem erro e a cláusula
+simplesmente não aconteceria. Agora o erro aparece com o número da cláusula.
+Conferem-se também os campos numéricos, porque o dataclass **não valida
+tipo**: um `duration_turns: "duas"` passaria e o `int()` de `bot.py:992`
+estouraria no **meio** do combate.
+
+**Provas:**
+- `test_07_tudo_que_esta_gravado_passa_na_validacao_do_salvamento`
+  (novo, em `testes/test_gifts.py`) — as **13 cláusulas reais** passam nos
+  dois lados, e os 4 casos inválidos são recusados com o trecho certo.
+- `testes/verify_editor_clausulas.py` (novo) — no **banco real**, com backup
+  pela API do SQLite: 8 gifts, ida e volta do payload da tela com as 13
+  cláusulas **idênticas**; payload sem `effects` não mexe em nada; cláusula
+  inválida é recusada **antes** de escrever. Backup:
+  `backups/clash_rpg-antes-prova-editor-20261003-052702.sqlite3`.
 
 **149 testes OK** (eram 147) · HTML checado com `vm.Script` · 8 provas
 `verify_*` rodam.

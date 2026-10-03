@@ -2682,11 +2682,12 @@ class Database:
         dlm = int(payload.get("defense_level_mod", 0))
         # `effects` só é gravado quando o chamador manda a chave.
         #
-        # O Control Center **não tem editor de cláusulas de gift** (item 3 do
-        # autor, ainda pendente) e manda o payload com nome/tier/classe/mods,
-        # mas sem `effects`. Com `payload.get("effects", [])` isso virava `[]`
-        # e o próprio "Salvar" da Central apagava TODAS as cláusulas do gift
-        # (checado em 2026-10-02: 1 cláusula → 0).
+        # O Control Center manda o payload de nome/tier/classe/mods sem essa
+        # chave quando o contêiner de cláusulas não está na tela. Com
+        # `payload.get("effects", [])` isso virava `[]` e o próprio "Salvar"
+        # da Central apagava TODAS as cláusulas do gift (checado em 2026-10-02:
+        # 1 cláusula → 0). Desde 2026-10-03 a tela TEM editor de cláusulas e
+        # manda `effects` de verdade — a regra continua valendo para o resto.
         #
         # Regra: **ausente = não mexe**; presente (mesmo `[]`) = manda.
         tem_effects = "effects" in payload

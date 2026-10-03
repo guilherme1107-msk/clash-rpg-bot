@@ -29,7 +29,7 @@ from rosemary_panel import RosemaryPanelRepository, save_rosemary_content, updat
 from src.application.services import VALID_CONDITIONS, normalize_skill_slot, parse_skill_payload
 from src.application.services.core_gateway import commit_sqlite_event
 from src.application.services.profile_service import default_profile, normalize_profile, normalize_profile_update
-from src.domain.combat import EFFECT_TRIGGERS, EFFECT_TYPES
+from src.domain.combat import EFFECT_TRIGGERS, EFFECT_TYPES, SkillEffect
 
 
 ROOT = Path(__file__).resolve().parent
@@ -442,10 +442,54 @@ def save_rosemary_state(payload: dict) -> dict:
     db.update_rosemary_state(guild_id, owner_id, **changes)
     return {"ok": True}
 
+def _validate_gift_effects(effects: object) -> None:
+    """Recusa na hora de salvar uma cláusula que o motor não conseguiria ler.
+
+    Sem isto a cláusula vai para o banco e o ``_effects_from_row`` descarta
+    ela **sozinha, em silêncio** — o mestre salvaria sem nenhum erro e a
+    cláusula simplesmente não aconteceria no combate. Aqui o erro aparece
+    enquanto a tela ainda tem tudo digitado.
+
+    Os campos numéricos são conferidos à mão porque o dataclass não valida
+    tipo: um ``duration_turns: "duas"`` passaria direto e o ``int()`` de
+    ``bot.py:992`` estouraria no **meio** do combate.
+    """
+    if not isinstance(effects, list):
+        raise ValueError("As cláusulas do E.G.O Gift precisam de ser uma lista.")
+    numericos = ("value", "count", "coin", "charge_cost", "condition_min",
+                 "condition_per", "condition_max_stacks", "condition_turn",
+                 "max_per_round", "duration_turns", "max_activations")
+    for numero, item in enumerate(effects, start=1):
+        if not isinstance(item, dict):
+            raise ValueError(f"Cláusula {numero}: precisa de ser um objeto.")
+        for campo in numericos:
+            if campo not in item or item[campo] is None:
+                continue
+            if isinstance(item[campo], bool) or not isinstance(item[campo], (int, float)):
+                raise ValueError(
+                    f"Cláusula {numero}: `{campo}` precisa ser um número, "
+                    f"veio {item[campo]!r}."
+                )
+        janela = item.get("activation_window")
+        if janela is not None and janela not in ("combat", "round"):
+            raise ValueError(
+                f"Cláusula {numero}: `activation_window` só aceita "
+                f"'combat' ou 'round', veio {janela!r}."
+            )
+        try:
+            SkillEffect(**item)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"Cláusula {numero} inválida: {exc}") from exc
+
+
 def save_ego_gift(payload: dict) -> dict:
     guild_id, kind, owner_id = int(payload["guild_id"]), str(payload["kind"]), int(payload["owner_id"])
     if not str(payload.get("name", "")).strip():
         raise ValueError("O E.G.O Gift precisa de um nome.")
+    # `effects` só vem quando o contêiner de cláusulas da tela existe; se não
+    # vier a chave fica de fora do UPDATE e as cláusulas ficam como estão.
+    if "effects" in payload:
+        _validate_gift_effects(payload["effects"])
     db = Database(database_path())
     return db.save_ego_gift(guild_id, kind, owner_id, payload)
 
@@ -843,14 +887,14 @@ def composer_import_emojis(payload: dict) -> dict:
             safe_name = re.sub(r"[^A-Za-z0-9_]", "_", emoji["name"])[:32].strip("_")
             if len(safe_name) < 2:
                 safe_name = f"emoji_{emoji['id'][-8:]}"
-            target_mode = str(payload.get("target", "application")).lower()
-            target_guild_id = int(payload.get("guild_id", 0))
-            if target_mode == "guild" and target_guild_id:
-                api_path = f"/guilds/{target_guild_id}/emojis"
-            else:
-                api_path = f"/applications/{bot['id']}/emojis"
-            created = _discord_api_json(
-                api_path, method="POST",
+            target_mode = str(payload.get("target", "application")).lower()
+            target_guild_id = int(payload.get("guild_id", 0))
+            if target_mode == "guild" and target_guild_id:
+                api_path = f"/guilds/{target_guild_id}/emojis"
+            else:
+                api_path = f"/applications/{bot['id']}/emojis"
+            created = _discord_api_json(
+                api_path, method="POST",
                 payload={"name": safe_name, "image": f"data:{mime};base64,{base64.b64encode(raw).decode('ascii')}"},
             )
             imported.append({"id": str(created["id"]), "name": created["name"]})

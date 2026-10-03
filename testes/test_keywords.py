@@ -264,9 +264,11 @@ class KeywordTests(unittest.TestCase):
     def test_payload_without_effects_never_erases_the_clauses(self):
         """O Control Center salva gift **sem** a chave `effects`.
 
-        Ele não tem editor de cláusulas de gift (item 3, pendente), então manda
-        só nome/tier/classe/mods. Isso não pode apagar o que já está gravado —
-        era exatamente o que acontecia antes (2026-10-02: 1 cláusula → 0).
+        Ele manda só nome/tier/classe/mods quando o card de gift não tem
+        contêiner de cláusulas aberto (hoje raro: o editor existe, mas a chave
+        só vai no payload se o contêiner estiver no DOM). Isso não pode apagar
+        o que já está gravado — era exatamente o que acontecia antes
+        (2026-10-02: 1 cláusula → 0).
         """
         criado = self._gift(100, "Com Cláusula")
 
