@@ -185,7 +185,13 @@ def execute_clash_job(database, request: dict, effects: dict | None = None) -> d
             current_member = database.get_enemy_group_member_combatant(guild_id, target_id)
             new_hp = max(0, int(current_member.get("hp", 0)) - damage)
             database.update_enemy_group_member(guild_id, target_id, {"hp": new_hp})
-        elif "hp" in loser_row:
+        elif "hp" in loser_row.keys():
+            # `loser_row` é um `sqlite3.Row`, e em `sqlite3.Row` o `in`
+            # testa os **valores** da linha, não os nomes das colunas
+            # (confirmado em Python 3.13: dá sempre False). Era este o teste
+            # — o UPDATE jamais rodasse se `enemies` ganhasse `hp`. `.keys()`
+            # é o nome de coluna, e existe também em dict, então os dois
+            # tipos de linha continuam valendo.
             new_hp = max(0, int(loser_row["hp"]) - damage)
             connection.execute(f"UPDATE {table} SET hp=? WHERE guild_id=? AND {key}=?", (new_hp, guild_id, target_id))
 
